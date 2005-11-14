@@ -1,15 +1,16 @@
 from Products.Archetypes.Storage import AttributeStorage
 
 def migrateAttribute(portal, obj, action, newObj=None, **kwargs):
-    """Apply a single action.
+    """Migrate an attribute
+    
     - portal should be the portal root
     - obj should be the object to migrate from
     - newObj, if given, should be the object to migrate to. If not given,
         migration happens within obj only. If newObj is giving, attributes
         will not be unset on obj even if a newAttribute for an action is
         specified.
-    - 'actions' specifies a list of actions to apply to each object. It should
-        be a tuple or list of dicts, with the keys:
+    - action specifies an action to apply to the object. It should be a dict,
+        with the keys:
         
             - attribute (requied)
             - storage (optional; default = AttributeStorage)

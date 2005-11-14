@@ -1,17 +1,16 @@
 from Products.CMFCore.utils import getToolByName
-from attributes import migrateAttribute
+from content import migrateContent
 
-def migrate(portal, query, actions=[], callBefore=None, callAfter=None, **kwargs):
-    """Migrate attributes of existing types. You can use this method to rename,
-    transform or change the storages of attributes on existing objects. Use
-    'query' to control what objects get migrated, and 'actions' to define
-    the transformation of the attributes.
+def migrate(portal, query, metaType, attributeActions, callBefore=None, callAfter=None, **kwargs):
+    """Migrate from one content type to another. You can use this method to 
+    change content from one type to another.
     
     - portal is the root of the portal.
     - query is a dict to pass to a catalog for finding the types to migrate.
         Typically, this would be something like {'portal_type' : 'MyType'}
-    - actions is a list of migration actions. Please see attributes.py for 
-        details.
+    - metaType is the new meta type to migrate to
+    - attributeActions is a list of attribute migration actions. Please see 
+        attributes.py for details.
     - callBefore, if given, should be method with the signature
             
             callBefore(obj, **kwargs)
@@ -38,9 +37,8 @@ def migrate(portal, query, actions=[], callBefore=None, callAfter=None, **kwargs
             if not status:
                 continue
             
-        # Execute all actions
-        for action in actions:
-            migrateAttribute(portal, obj, action, **kwargs)
+        # Execute all migration
+        migrateContent(portal, obj, metaType, action, **kwargs)
                 
         # Apply callAfter() if applicable
         if callAfter is not None:
