@@ -10,7 +10,7 @@ from Products.Archetypes.Storage import AttributeStorage
 
 default_user = ZopeTestCase.user_name
 
-def makeUpper(obj, attr, val, **kw):
+def makeUpper(obj, attr, newObj, newAttr, val, **kw):
     s = str(val)
     s = s.upper()
     val.update(s, obj)

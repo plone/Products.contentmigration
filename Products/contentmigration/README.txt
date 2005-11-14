@@ -1,6 +1,8 @@
 Content migration utilities  
 by Martin Aspeli <optilude@gmx.net>
 
+Released under the GNU Lesser General Public License (LGPL) version 2.0
+
 This is a generic content migration framework, which should help you write
 your own content migrations. It has no UI and no value on its own, but
 makes it easy to write certain type of content migrations.
