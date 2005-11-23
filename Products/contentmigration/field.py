@@ -46,11 +46,12 @@ def migrateField(obj, action, newObj=None, **kwargs):
         attribute between the two attributes. This should be a method with the 
         following signature
         
-            transform(obj, oldFieldName, newObj, newFieldName, value, **kwargs)
-        
-        Note that 'newObj' and 'newFieldName' may be the same as 'obj' and
-        'oldFieldName', respectively, if no object- or fieldname-migration is 
-        taking place.
+            transform(obj, value, **kwargs)
+            
+        The kwargs will contain any passed-in kwargs, as well as the fields 
+        'oldFieldName', 'newObj', 'newFieldName'. Note that 'newObj' and 
+        'newFieldName' may be the same as 'obj' and 'oldFieldName', 
+        respectively, if no object- or fieldname-migration is taking place.
         
         This method should return the transformed value of the field. If 
         'transform' isgiven and 'newFieldName' is not, the return value from 
@@ -118,7 +119,9 @@ def migrateField(obj, action, newObj=None, **kwargs):
     if not unsetField:       
         # Apply transform, if given
         if doTransform:
-            value = transform(obj, fieldName, newObj, newFieldName, value, **kwargs)
+            value = transform(obj, value, fieldName = fieldName, 
+                                          newObj = newObj, 
+                                          newFieldName = newFieldName, **kwargs)
 
         # Now set the possibly transformed value, with the possibly new field name 
         # and/or storage on the possibly new object, unless 'unset' is given.

@@ -23,6 +23,10 @@ class BaseInlineMigrator:
     meta_type = None
     kwargs = {}
     
+    # Framework requires us to have dst_ versions, even if they are not
+    # used
+    dst_portal_type = dst_meta_type = '__dummy__'
+    
     def __init__(self, obj, portal_type=None, meta_type=None, **kwargs):
         self.obj = aq_inner(obj)
         if portal_type is not None:

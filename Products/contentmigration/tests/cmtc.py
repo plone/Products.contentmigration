@@ -29,7 +29,7 @@ PloneTestCase.setupPloneSite(products=PRODUCTS)
 
 # Callback methods
 
-def makeUpper(obj, attr, newObj, newAttr, val, **kw):
+def makeUpper(obj, val, **kwargs):
     s = str(val)
     s = s.upper()
     val.update(s, obj)
@@ -55,8 +55,8 @@ def callAfterAttribute(obj, attributeName, attributeValue, **kwargs):
 
 # Test migrator
 class TestMigrator(InlineFieldActionMigrator):
-    src_portal_type = dst_portal_type = 'Document'
-    src_meta_type = dst_meta_type = 'ATDocument'
+    src_portal_type = 'Document'
+    src_meta_type = 'ATDocument'
 
 class ContentMigratorTestCase(PloneTestCase.PloneTestCase):
 
