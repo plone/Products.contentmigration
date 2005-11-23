@@ -146,6 +146,7 @@ class TestFieldMigration(ContentMigratorTestCase):
         query   = {'getId' : 'd1'}
         actions = ({'fieldName'    : 'text',
                     'unset'        : True,
+                    'storage'      : storage,
                     },)
         self.execute(query, actions)
         self.assertEqual(storage.get('text', self.folder['d2']).getRaw(), 'Body two')

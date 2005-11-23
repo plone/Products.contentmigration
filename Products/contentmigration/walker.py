@@ -39,15 +39,13 @@ class CustomQueryWalker(CatalogWalker):
         """
         catalog = self.catalog
         query = self.additionalQuery
-        query = {
-            'portal_type' : self.src_portal_type,
-            'meta_type' : self.src_meta_type,
-        }
+        query['portal_type'] = self.src_portal_type
+        query['meta_type'] = self.src_meta_type
 
         if HAS_LINGUA_PLONE and 'Language' in catalog.indexes():
             #query['Language'] = catalog.uniqueValuesFor('Language')
             query['Language'] = 'all'
-
+            
         for brain in catalog(query):
             obj = brain.getObject()
             
