@@ -7,11 +7,28 @@ This is a generic content migration framework, which should help you write
 your own content migrations. It has no UI and no value on its own, but
 makes it easy to write certain type of content migrations.
 
-At present, only one migrator is available, the AT Field Migrator. This migrator
-is capable of migrating between two different versions of the same AT content
-type. It is capable of renaming fields, changing a field's storage (with or
-without a rename in the process), or applying any transformation on a field's
-contents via a callback function.
+This extends the ATContentTypes migration framework to provide three useful 
+extensions:
 
-Please see the docstring on atfieldmigrator.migrate() for full details. For
-examples, see tests/testATFieldMigration.
+ o A CustomQueryWalker can be used to specify a more specific catalog query
+    for a walker to use (e.g. which content to actually migrate). This can
+    be used with any migrator.
+    
+ o A BaseInlineMigrator is similar to BaseMigrator, but does not migrate by
+    copying the old object to a temporary location, creating a new object and
+    applying migration methods. Instead, migration methods are applied in-place.
+    This simplifies the code significantly, because attributes, local roles etc.
+    does not need to be copied over.
+    
+    Note that whereas BaseMigrator works in terms of self.old and self.new as
+    the objects being migrated, BaseInlineMigrator only has a single object,
+    stored in self.obj. This can be used with any walker.
+    
+ o An extension of this class called FieldActionMigrator. This uses the     
+    action-based migration framework for Archetypes fields, found in field.py.
+    Please refer to that file for full details, but briefly, you specify a list
+    of attributes to migrate at the storage level, instructing the migrator
+    whether to rename, transform, unset or change the storage for an attribute.
+
+Please see the docstrings in walker.py, migrator.py and field.py for full
+details. For examples, see tests/cmtc.py and tests/testATFieldMigration.py.
