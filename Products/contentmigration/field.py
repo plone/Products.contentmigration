@@ -113,7 +113,7 @@ def migrateField(obj, action, newObj=None, **kwargs):
     # ended up there during blind attribute migration or initialisation
     storage.unset(fieldName, obj)
     try: storage.unset(fieldName, newObj)
-    except AttributeError: pass 
+    except (AttributeError, KeyError): pass 
        
     # If we are simply unsetting, skip setting values
     if not unsetField:       
