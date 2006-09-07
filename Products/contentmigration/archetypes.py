@@ -68,7 +68,7 @@ class ATItemMigratorMixin:
         the new schema.  Obeys field modes for readable and writable
         fields.  These values are then passed in as field kwargs into
         the constructor in the createNew method."""
-        _checkLoadAttr(self, 'schema')
+        self._checkLoadAttr('schema')
 
         old_schema = self.old.Schema()
 
