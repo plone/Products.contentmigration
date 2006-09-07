@@ -11,9 +11,9 @@ from Products.ATContentTypes.migration.migrator import FolderMigrationMixin
 from Products.ATContentTypes.migration.migrator import UIDMigrator
 
 from Products.contentmigration.inplace import BaseInplaceCMFMigrator
-from Products.ATContentTypes.migration.migrator import InplaceItemMigrationMixin
-from Products.ATContentTypes.migration.migrator import InplaceFolderMigrationMixin
-from Products.ATContentTypes.migration.migrator import InplaceUIDMigrator
+from Products.contentmigration.inplace import InplaceItemMigrationMixin
+from Products.contentmigration.inplace import InplaceFolderMigrationMixin
+from Products.contentmigration.inplace import InplaceUIDMigrator
 
 def migrate_dummy(self):
     """Do nothing.  Used to override inherited methods we don't
