@@ -1,6 +1,10 @@
 """Support for migrators that place the destination object in a
 different location from the source object."""
 
+from Acquisition import aq_inner
+
+from Products.ATContentTypes.migration.common import _createObjectByType
+
 class TranslocatingMigratorMixin:
     """A migrator that placees the destination object in a different
     location from the source object."""
