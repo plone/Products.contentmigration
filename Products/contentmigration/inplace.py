@@ -3,13 +3,25 @@ migrator, then delete the old object and then load the values into the
 new object without requiring that the old object be renamed or
 moved."""
 
+from copy import copy
+
+from Acquisition import aq_base
+from ZODB.POSException import ConflictError
+from AccessControl.Permission import Permission
+
+from Products.CMFCore.utils import getToolByName
+
+from Products.Archetypes.interfaces.referenceable import IReferenceable
+
 from Products.ATContentTypes.migration.migrator import BaseMigrator
 from Products.ATContentTypes.migration.migrator import BaseCMFMigrator
 from Products.ATContentTypes.migration.migrator import ItemMigrationMixin
 from Products.ATContentTypes.migration.migrator import FolderMigrationMixin
 from Products.ATContentTypes.migration.migrator import UIDMigrator
 from Products.ATContentTypes.migration.migrator import METADATA_MAPPING
+from Products.ATContentTypes.migration.migrator import getPermissionMapping
 from Products.ATContentTypes.migration.migrator import copyPermMap
+from Products.ATContentTypes.migration.migrator import LOG
 
 _marker = []
 
@@ -245,7 +257,9 @@ class BaseInplaceCMFMigrator(BaseInplaceMigrator, BaseCMFMigrator):
 class InplaceItemMigrationMixin(ItemMigrationMixin):
     """Migrates a non folderish object.""" 
 
-    renameOld = ItemMigrationMixin.remove
+    def renameOld(self):
+        """Remove the old object rather than rename it."""
+        self.parent.manage_delObjects([self.orig_id])
     
     def remove(self):
         """Since we remove where other migrators rename, we pass
