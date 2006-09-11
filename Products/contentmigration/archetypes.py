@@ -68,7 +68,6 @@ class ATItemMigratorMixin:
         the new schema.  Obeys field modes for readable and writable
         fields.  These values are then passed in as field kwargs into
         the constructor in the createNew method."""
-        self._checkLoadAttr('schema')
 
         old_schema = self.old.Schema()
 
@@ -88,7 +87,7 @@ class ATItemMigratorMixin:
             if omit_field_name in old_field_names:
                 old_field_names.remove(omit_field_name)
 
-        self.schema = kwargs = {}
+        kwargs = getattr(self, 'schema', {})
         for old_field_name in old_field_names:
             old_field = self.old.getField(old_field_name)
             new_field_name = self.fields_map.get(old_field_name,
@@ -104,6 +103,7 @@ class ATItemMigratorMixin:
                             old_field.getAccessor(self.old))
                 value = accessor()
                 kwargs[new_field_name] = value
+        self.schema = kwargs
 
     def createNew(self):
         """Create the new object passing in the loaded archetypes
