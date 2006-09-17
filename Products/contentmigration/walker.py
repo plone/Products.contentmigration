@@ -1,3 +1,5 @@
+from Products.ZCatalog.Catalog import mergeResults
+
 from Products.ATContentTypes.migration.common import HAS_LINGUA_PLONE
 from Products.ATContentTypes.migration.walker import CatalogWalker, registerWalker
 
@@ -62,3 +64,47 @@ class CustomQueryWalker(CatalogWalker):
                 if state is None: obj._p_deactivate()
                     
 registerWalker(CustomQueryWalker)
+
+class MultiCustomQueryWalker(CustomQueryWalker):
+    """A catalog walker that combines the results from multiple
+    queries."""
+
+    additionalQueries = ()
+
+    def walk(self):
+        """Walks around and returns all objects which needs migration
+
+        :return: objects (with acquisition wrapper) that needs migration
+        :rtype: generator
+        """
+        catalog = self.catalog
+        query = self.additionalQuery
+        query['portal_type'] = self.src_portal_type
+        query['meta_type'] = self.src_meta_type
+
+        if HAS_LINGUA_PLONE and 'Language' in catalog.indexes():
+            #query['Language'] = catalog.uniqueValuesFor('Language')
+            query['Language'] = 'all'
+
+        results = []
+        for addQ in self.additionalQueries:
+            addQ.update(query)
+            results.append(catalog(addQ))
+        brains = mergeResults(results, has_sort_keys=False,
+                              reverse=False)
+            
+        for brain in brains:
+            obj = brain.getObject()
+            
+            if self.callBefore is not None and callable(self.callBefore):
+                if self.callBefore(obj, **self.kwargs) == False:
+                    continue
+            
+            try: state = obj._p_changed
+            except: state = 0
+            if obj is not None:
+                yield obj
+                # safe my butt
+                if state is None: obj._p_deactivate()
+                    
+registerWalker(MultiCustomQueryWalker)
