@@ -3,6 +3,7 @@ from Acquisition import aq_inner
 from Products.CMFCore.utils import getToolByName
 
 from Products.Archetypes.ArchetypeTool import getType
+from Products.Archetypes.config import REFERENCE_ANNOTATION
 
 from Products.ATContentTypes.migration.common import _createObjectByType
 from Products.ATContentTypes.migration.migrator import BaseCMFMigrator
@@ -52,6 +53,21 @@ class ATMigratorMixin:
             new_field = new_schema[field_name]
             mutator = new_field.getMutator(self.new)
             mutator(getattr(self, 'old_' + field_name))
+
+    def beforeChange_references(self):
+        """Migrate references annotation."""
+        # Set the flag so that references aren't deleted
+        self.old._v_cp_refs = 1
+        # Move the references annotation storage
+        if hasattr(self.old, REFERENCE_ANNOTATION):
+            at_references = getattr(self.old, REFERENCE_ANNOTATION)
+            setattr(self, REFERENCE_ANNOTATION, at_references)
+
+    def migrate_references(self):
+        """Migrate references annotation."""
+        if hasattr(self, REFERENCE_ANNOTATION):
+            at_references = getattr(self, REFERENCE_ANNOTATION)
+            setattr(self.new, REFERENCE_ANNOTATION, at_references)
 
 class BaseATMigrator(ATMigratorMixin, BaseCMFMigrator):
     """Migrates content of one AT type to another AT type."""
