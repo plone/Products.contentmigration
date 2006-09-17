@@ -4,6 +4,9 @@ different location from the source object."""
 from Acquisition import aq_inner
 
 from Products.ATContentTypes.migration.common import _createObjectByType
+from Products.ATContentTypes.migration.migrator import UIDMigrator
+
+from Products.contentmigration.inplace import InplaceUIDMigrator
 
 class TranslocatingMigratorMixin:
     """A migrator that placees the destination object in a different
@@ -25,3 +28,13 @@ class TranslocatingMigratorMixin:
         _createObjectByType(self.dst_portal_type, dst_parent,
                             self.new_id, **schema)
         self.new = getattr(aq_inner(dst_parent).aq_explicit, self.new_id)
+
+class TranslocatingInplaceMigrator(TranslocatingMigratorMixin,
+                                   InplaceUIDMigrator):
+    """UID migration support for inplace translocating migrators."""
+    pass
+
+class TranslocatingMigrator(TranslocatingMigratorMixin,
+                            UIDMigrator):
+    """UID migration support for translocating migrators."""
+    pass
