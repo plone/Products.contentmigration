@@ -27,8 +27,9 @@ class CustomQueryWalker(CatalogWalker):
         The kwargs passed to this constructor will be passed along to the
         test function.
         """
-        CatalogWalker.__init__(self, portal, migrator, src_portal_type=None, 
-                                dst_portal_type=None, **kwargs)
+        CatalogWalker.__init__(self, portal, migrator,
+                               src_portal_type=src_portal_type,
+                               dst_portal_type=dst_portal_type, **kwargs)
         self.additionalQuery.update(query)
         self.callBefore = callBefore
         self.kwargs = kwargs
