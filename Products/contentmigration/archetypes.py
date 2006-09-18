@@ -4,6 +4,7 @@ from Products.CMFCore.utils import getToolByName
 
 from Products.Archetypes.ArchetypeTool import getType
 from Products.Archetypes.config import REFERENCE_ANNOTATION
+from Products.Archetypes.Referenceable import Referenceable
 
 from Products.ATContentTypes.migration.common import _createObjectByType
 from Products.ATContentTypes.migration.migrator import BaseCMFMigrator
@@ -15,6 +16,8 @@ from Products.contentmigration.inplace import BaseInplaceCMFMigrator
 from Products.contentmigration.inplace import InplaceItemMigrationMixin
 from Products.contentmigration.inplace import InplaceFolderMigrationMixin
 from Products.contentmigration.inplace import InplaceUIDMigrator
+
+_marker = []
 
 def migrate_dummy(self):
     """Do nothing.  Used to override inherited methods we don't
@@ -57,6 +60,7 @@ class ATMigratorMixin:
     def beforeChange_references(self):
         """Migrate references annotation."""
         # Set the flag so that references aren't deleted
+        cp_refs = getattr(self.old, '_v_cp_refs', _marker)
         self.old._v_cp_refs = 1
         # Move the references annotation storage
         if hasattr(self.old, REFERENCE_ANNOTATION):
@@ -65,9 +69,20 @@ class ATMigratorMixin:
 
     def migrate_references(self):
         """Migrate references annotation."""
+        # Restor the references annotation
         if hasattr(self, REFERENCE_ANNOTATION):
             at_references = getattr(self, REFERENCE_ANNOTATION)
             setattr(self.new, REFERENCE_ANNOTATION, at_references)
+        # Run the reference manage_afterAdd to transition all copied
+        # references
+        is_cp = getattr(self.old, '_v_is_cp', _marker)
+        self.new._v_is_cp = 0
+        Referenceable.manage_afterAdd(self.new, self.new,
+                                      self.new.getParentNode())
+        if is_cp is not _marker:
+            self.old._v_is_cp = is_cp
+        else:
+            del self.old._v_is_cp
 
 class BaseATMigrator(ATMigratorMixin, BaseCMFMigrator):
     """Migrates content of one AT type to another AT type."""
