@@ -80,9 +80,9 @@ class ATMigratorMixin:
         Referenceable.manage_afterAdd(self.new, self.new,
                                       self.new.getParentNode())
         if is_cp is not _marker:
-            self.old._v_is_cp = is_cp
+            self.new._v_is_cp = is_cp
         else:
-            del self.old._v_is_cp
+            del self.new._v_is_cp
 
 class BaseATMigrator(ATMigratorMixin, BaseCMFMigrator):
     """Migrates content of one AT type to another AT type."""
