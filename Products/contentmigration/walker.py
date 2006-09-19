@@ -42,7 +42,7 @@ class CustomQueryWalker(CatalogWalker):
         :rtype: generator
         """
         catalog = self.catalog
-        query = self.additionalQuery
+        query = self.additionalQuery.copy()
         query['portal_type'] = self.src_portal_type
         query['meta_type'] = self.src_meta_type
 
