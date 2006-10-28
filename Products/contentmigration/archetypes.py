@@ -29,6 +29,7 @@ class ATMigratorMixin:
 
     fields_map = {}
     only_fields_map = False
+    accessor_getter = 'getEditAccessor'
 
     # Override some methods from BaseCMFMigrator that we don't want to
     # run for AT migrations.
@@ -130,8 +131,9 @@ class ATItemMigratorMixin:
             new_field = new_schema[new_field_name]
 
             if ('r' in old_field.mode and 'w' in new_field.mode):
-                accessor = (old_field.getEditAccessor(self.old) or
-                            old_field.getAccessor(self.old))
+                accessor = (
+                    getattr(old_field, self.accessor_getter)(self.old)
+                    or old_field.getAccessor(self.old))
                 value = accessor()
                 kwargs[new_field_name] = value
         self.schema = kwargs
