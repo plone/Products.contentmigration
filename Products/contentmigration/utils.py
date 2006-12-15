@@ -7,7 +7,7 @@ from zope.event import notify
 from zope.app.container.contained import ObjectMovedEvent
 from zope.app.container.contained import notifyContainerModified
 from OFS.event import ObjectWillBeMovedEvent
-from OFS.CopySupport import sanity_check
+from OFS.CopySupport import sanity_check, CopyError
 
 def unrestricted_move(self, ob):
     """Move an object from one container to another bypassing certain
