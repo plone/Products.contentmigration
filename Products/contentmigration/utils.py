@@ -1,5 +1,6 @@
 """Utility functions."""
 
+import sys
 from Acquisition import aq_base, aq_inner, aq_parent
 from App.Dialogs import MessageDialog
 from ZODB.POSException import ConflictError
