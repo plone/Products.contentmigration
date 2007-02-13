@@ -35,7 +35,7 @@ from ZODB.POSException import ConflictError
 from zExceptions import BadRequest
 from AccessControl.Permission import Permission
 
-from Products.from Products.contentmigration.common.migration.common import *
+from Products.contentmigration.common import *
 from Products.contentmigration.common import _createObjectByType
 from Products.Archetypes.interfaces.referenceable import IReferenceable
 
@@ -271,11 +271,16 @@ class BaseMigrator:
         # clean the auto-generated creators by Archetypes ExtensibleMeatadata
         self.new.setCreators([])
         local_roles = self.old.__ac_local_roles__
+        if hasattr(self.old, '__ac_local_roles_block__'):
+            local_roles_block = self.old.__ac_local_roles_block__
         if not local_roles:
             owner = self.old.getWrappedOwner()
             self.new.manage_setLocalRoles(owner.getId(), ['Owner'])
         else:
             self.new.__ac_local_roles__ = copy(local_roles)
+            if hasattr(self.old, '__ac_local_roles_block__'):
+                self.new.__ac_local_roles_block__ = (
+                    self.old.__ac_local_roles_block__)
             
     def migrate_user_roles(self):
         """Migrate roles added by users

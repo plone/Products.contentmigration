@@ -115,7 +115,11 @@ class BaseInplaceMigrator(BaseMigrator):
     def beforeChange_localroles(self):
         """Load local roles."""
         self._checkLoadAttr('__ac_local_roles__')
+        self._checkLoadAttr('__ac_local_roles_block__')
         self.__ac_local_roles__ = self.old.__ac_local_roles__
+        if hasattr(self.old, '__ac_local_roles_block__'):
+            self.__ac_local_roles_block__ = (
+                self.old.__ac_local_roles_block__)
 
     def migrate_localroles(self):
         """Migrate local roles
@@ -130,6 +134,9 @@ class BaseInplaceMigrator(BaseMigrator):
         else:
             self.new.__ac_local_roles__ = copy(
                 self.__ac_local_roles__)
+            if hasattr(self, '__ac_local_roles_block__'):
+                self.new.__ac_local_roles_block__ = (
+                    self.__ac_local_roles_block__)
 
     def beforeChange_permission_settings(self):
         """Load permission settings (permission <-> role)."""
@@ -236,8 +243,8 @@ class BaseInplaceCMFMigrator(BaseInplaceMigrator, BaseCMFMigrator):
 
     def migrate_allowDiscussion(self):
         """migrate allow discussion bit."""
-        if (getattr(aq_base(self.new), 'isDiscussable', _marker)  is
-            not _marker):
+        if (getattr(aq_base(self.new), 'isDiscussable', _marker)
+            is not _marker and hasattr(self, 'isDiscussable')):
             self.new.isDiscussable(self.isDiscussable)
 
     def beforeChange_discussion(self):

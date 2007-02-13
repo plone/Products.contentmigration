@@ -18,6 +18,8 @@ from Products.contentmigration.inplace import InplaceItemMigrationMixin
 from Products.contentmigration.inplace import InplaceFolderMigrationMixin
 from Products.contentmigration.inplace import InplaceUIDMigrator
 
+from Products.contentmigration.translocate import TranslocatingMigratorMixin
+
 _marker = []
 
 def migrate_dummy(self):
@@ -106,7 +108,7 @@ class ATItemMigratorMixin:
 
         typesTool = getToolByName(self.parent, 'portal_types')
         fti = typesTool.getTypeInfo(self.dst_portal_type)
-        archetype = getType(self.dst_portal_type, fti.product)
+        archetype = getType(self.dst_meta_type, fti.product)
         new_schema = archetype['klass'].schema 
 
         if self.only_fields_map:
@@ -174,4 +176,16 @@ class InplaceATFolderMigrator(InplaceFolderMigrationMixin,
                               InplaceUIDMigrator,
                               BaseInplaceATMigrator):
     """Migrator from folderish items implementing the AT API."""
+    pass
+
+# Translocating migrators
+
+class TranslocatingInplaceATItemMigrator(TranslocatingMigratorMixin,
+                                         InplaceATItemMigrator):
+    """Inplace migrator for items implementing the AT API."""
+    pass
+
+class TranslocatingInplaceATFolderMigrator(TranslocatingMigratorMixin,
+                                           InplaceATFolderMigrator):
+    """Inplace migrator for folders implementing the AT API."""
     pass

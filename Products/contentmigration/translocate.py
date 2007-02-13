@@ -4,12 +4,12 @@ different location from the source object."""
 from Acquisition import aq_inner
 
 from Products.contentmigration.common import _createObjectByType
-from Products.contentmigration.basemigrator.migrator import UIDMigrator
 
-from Products.contentmigration.inplace import InplaceUIDMigrator
+from Products.contentmigration.inplace import (InplaceCMFItemMigrator,
+                                               InplaceCMFFolderMigrator)
 
 class TranslocatingMigratorMixin:
-    """A migrator that placees the destination object in a different
+    """A migrator that places the destination object in a different
     location from the source object."""
 
     def getDestinationParent(self):
@@ -28,6 +28,35 @@ class TranslocatingMigratorMixin:
         _createObjectByType(self.dst_portal_type, dst_parent,
                             self.new_id, **schema)
         self.new = getattr(aq_inner(dst_parent).aq_explicit, self.new_id)
+
+    def reorder(self):
+        """Reorder in the right parent.
+        """
+        if self.need_order:
+            try:
+                self.getDestinationParent().moveObject(
+                    self.new_id, self._position)
+            except ConflictError:
+                raise
+            except:
+                LOG.error('Failed to reorder object %s in %s' % (self.new,
+                          self.parent), exc_info=True)
+
+class TranslocatingInplaceCMFItemMigrator(TranslocatingMigratorMixin,
+                                          InplaceCMFItemMigrator):
+    """Inplace migrator for items implementing the CMF API."""
+    pass
+
+class TranslocatingInplaceCMFFolderMigrator(
+    TranslocatingMigratorMixin, InplaceCMFFolderMigrator):
+    """Inplace migrator for folders implementing the CMF API."""
+    pass
+
+# BBB: Not sure why these below were done this way, but they are in
+# use by remember so I'm leaving them here.
+
+from Products.contentmigration.basemigrator.migrator import UIDMigrator
+from Products.contentmigration.inplace import InplaceUIDMigrator
 
 class TranslocatingInplaceMigrator(TranslocatingMigratorMixin,
                                    InplaceUIDMigrator):

@@ -4,8 +4,6 @@ from Products.contentmigration.walker import CustomQueryWalker
 
 import transaction
 
-ZopeTestCase.installProduct('contentmigraiton')
-
 from Products.PloneTestCase import PloneTestCase
 PloneTestCase.setupPloneSite()
 
