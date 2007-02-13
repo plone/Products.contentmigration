@@ -3,8 +3,8 @@ different location from the source object."""
 
 from Acquisition import aq_inner
 
-from Products.ATContentTypes.migration.common import _createObjectByType
-from Products.ATContentTypes.migration.migrator import UIDMigrator
+from Products.contentmigration.common import _createObjectByType
+from Products.contentmigration.basemigrator.migrator import UIDMigrator
 
 from Products.contentmigration.inplace import InplaceUIDMigrator
 

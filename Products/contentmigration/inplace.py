@@ -13,15 +13,15 @@ from Products.CMFCore.utils import getToolByName
 
 from Products.Archetypes.interfaces.referenceable import IReferenceable
 
-from Products.ATContentTypes.migration.migrator import BaseMigrator
-from Products.ATContentTypes.migration.migrator import BaseCMFMigrator
-from Products.ATContentTypes.migration.migrator import ItemMigrationMixin
-from Products.ATContentTypes.migration.migrator import FolderMigrationMixin
-from Products.ATContentTypes.migration.migrator import UIDMigrator
-from Products.ATContentTypes.migration.migrator import METADATA_MAPPING
-from Products.ATContentTypes.migration.migrator import getPermissionMapping
-from Products.ATContentTypes.migration.migrator import copyPermMap
-from Products.ATContentTypes.migration.migrator import LOG
+from Products.contentmigration.basemigrator.migrator import BaseMigrator
+from Products.contentmigration.basemigrator.migrator import BaseCMFMigrator
+from Products.contentmigration.basemigrator.migrator import ItemMigrationMixin
+from Products.contentmigration.basemigrator.migrator import FolderMigrationMixin
+from Products.contentmigration.basemigrator.migrator import UIDMigrator
+from Products.contentmigration.basemigrator.migrator import METADATA_MAPPING
+from Products.contentmigration.basemigrator.migrator import getPermissionMapping
+from Products.contentmigration.basemigrator.migrator import copyPermMap
+from Products.contentmigration.basemigrator.migrator import LOG
 
 _marker = []
 

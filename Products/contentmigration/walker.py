@@ -1,7 +1,7 @@
 from Products.ZCatalog.Catalog import mergeResults
 
-from Products.ATContentTypes.migration.common import HAS_LINGUA_PLONE
-from Products.ATContentTypes.migration.walker import CatalogWalker, registerWalker
+from Products.contentmigration.common import HAS_LINGUA_PLONE
+from Products.contentmigration.basemigrator.walker import CatalogWalker, registerWalker
 
 class CustomQueryWalker(CatalogWalker):
     """Walker using portal_catalog and an optional custom query. The ATCT

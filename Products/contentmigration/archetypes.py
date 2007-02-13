@@ -6,11 +6,12 @@ from Products.Archetypes.ArchetypeTool import getType
 from Products.Archetypes.config import REFERENCE_ANNOTATION
 from Products.Archetypes.Referenceable import Referenceable
 
-from Products.ATContentTypes.migration.common import _createObjectByType
-from Products.ATContentTypes.migration.migrator import BaseCMFMigrator
-from Products.ATContentTypes.migration.migrator import ItemMigrationMixin
-from Products.ATContentTypes.migration.migrator import FolderMigrationMixin
-from Products.ATContentTypes.migration.migrator import UIDMigrator
+from Products.contentmigration.common import _createObjectByType
+
+from Products.contentmigration.basemigrator.migrator import BaseCMFMigrator
+from Products.contentmigration.basemigrator.migrator import ItemMigrationMixin
+from Products.contentmigration.basemigrator.migrator import FolderMigrationMixin
+from Products.contentmigration.basemigrator.migrator import UIDMigrator
 
 from Products.contentmigration.inplace import BaseInplaceCMFMigrator
 from Products.contentmigration.inplace import InplaceItemMigrationMixin
