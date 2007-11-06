@@ -1,0 +1,43 @@
+;-*-Doctest-*-
+================================
+Archetype to Archetype Migration
+================================
+
+These are migrators for migrating from one archetyeps object to
+another making use of the schemata for field migration::
+
+    >>> from Products.CMFCore.permissions import ModifyPortalContent
+    >>> from Products.PloneTestCase.setup import _createObjectByType
+    >>> self.portal.manage_permission(
+    ...     ModifyPortalContent, ['Manager', 'Owner'], acquire=0)
+
+    >>> foo_doc = _createObjectByType(
+    ...     'Document', self.portal, id='foo', title='Foo')
+    >>> foo_doc.portal_type, foo_doc.getId(), foo_doc.Title()
+    ('Document', 'foo', 'Foo')
+
+    >>> bar_doc = _createObjectByType(
+    ...     'Document', self.portal, id='bar', title='Bar')
+    >>> bar_doc.portal_type, bar_doc.getId(), bar_doc.Title()
+    ('Document', 'bar', 'Bar')
+
+    >>> from transaction import commit
+    >>> commit()
+
+    >>> from Products.contentmigration.archetypes import ATItemMigrator
+    >>> foo_migrator = ATItemMigrator(foo_doc)
+    >>> foo_migrator.dst_portal_type = 'News Item'
+    >>> foo_migrator.dst_meta_type = 'ATNewsItem'
+    >>> foo_migrator.migrate()
+    >>> foo_news = self.portal.foo
+    >>> foo_news.portal_type, foo_news.getId(), foo_news.Title()
+    ('News Item', 'foo', 'Foo')
+
+    >>> from Products.contentmigration.archetypes import InplaceATItemMigrator
+    >>> bar_migrator = InplaceATItemMigrator(bar_doc)
+    >>> bar_migrator.dst_portal_type = 'News Item'
+    >>> bar_migrator.dst_meta_type = 'ATNewsItem'
+    >>> bar_migrator.migrate()
+    >>> bar_news = self.portal.bar
+    >>> bar_news.portal_type, bar_news.getId(), bar_news.Title()
+    ('News Item', 'bar', 'Bar')
