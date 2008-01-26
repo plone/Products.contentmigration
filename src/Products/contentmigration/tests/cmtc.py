@@ -55,5 +55,5 @@ class ContentMigratorTestCase(PloneTestCase.PloneTestCase):
                                     callBefore = callBefore, 
                                     **kwargs)
         # Need this to avoid copy errors....
-        transaction.commit(1)
+        transaction.savepoint(optimistic=True)
         walker.go(**kwargs)

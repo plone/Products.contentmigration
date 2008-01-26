@@ -213,7 +213,7 @@ class Walker:
                     savepoint = transaction.savepoint()
                 else:
                     LOG.debug('Committing subtransaction after %s objects' % counter)
-                    transaction.commit(1)
+                    transaction.savepoint(optimistic=True)
 
         self.out = out
         self.counter = counter
