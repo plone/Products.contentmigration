@@ -131,7 +131,9 @@ class ATItemMigratorMixin:
             if new_field_name is None:
                 continue
 
-            new_field = new_schema[new_field_name]
+            new_field = new_schema.get(new_field_name, None)
+            if new_field is None:
+                continue
 
             if ('r' in old_field.mode and 'w' in new_field.mode):
                 accessor = (
