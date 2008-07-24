@@ -10,9 +10,9 @@ setup(name='Products.contentmigration',
       version=version,
       description="A generic content migration framework for Plone, which has no UI or value on its own, but should help you write your own content migrations.",
       long_description=(
-        read('src/Products/contentmigration/README.txt')
+        read('Products/contentmigration/README.txt')
         + '\n\n' +
-        read('src/Products/contentmigration/CHANGES.txt')
+        read('Products/contentmigration/CHANGES.txt')
         ),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
@@ -27,8 +27,7 @@ setup(name='Products.contentmigration',
       author_email='optilude@gmx.net',
       url='',
       license='LGPL',
-      package_dir={'':'src'},
-      packages=find_packages('src'),
+      packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['Products'],
       include_package_data=True,
       zip_safe=False,
