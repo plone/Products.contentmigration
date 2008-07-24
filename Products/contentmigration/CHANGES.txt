@@ -1,0 +1,17 @@
+Changelog
+=========
+
+
+1.0 - Unreleased
+----------------
+
+* Modify CatalogWalker to root the search at the portal passed in. This
+  makes it possible to only migrate in parts of a site.
+  [wichert]
+
+
+1.0b4 - ?
+---------
+
+* First eggfied release.
+

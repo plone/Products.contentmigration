@@ -241,10 +241,10 @@ class CatalogWalker(Walker):
         query = {
             'portal_type' : self.src_portal_type,
             'meta_type' : self.src_meta_type,
+            'path' : "/".join(self.portal.getPhysicalPath()),
         }
 
         if HAS_LINGUA_PLONE and 'Language' in catalog.indexes():
-            #query['Language'] = catalog.uniqueValuesFor('Language')
             query['Language'] = 'all'
 
         for brain in catalog(query):
