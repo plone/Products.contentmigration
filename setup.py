@@ -1,7 +1,7 @@
 import os
 from setuptools import setup, find_packages
 
-version = '1.0b4'
+version = '1.0'
 
 def read(rnames):
     return open(os.path.join(*rnames.split("/"))).read()
@@ -14,13 +14,12 @@ setup(name='Products.contentmigration',
         + '\n\n' +
         read('Products/contentmigration/CHANGES.txt')
         ),
-      # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Framework :: Plone",
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
         ],
-      keywords='plone archetypes atct',
+      keywords='Plone Archetypes ATContentTypes',
       author='Martin Aspeli (and others)',
       author_email='optilude@gmx.net',
       url='',
@@ -32,7 +31,4 @@ setup(name='Products.contentmigration',
       install_requires=[
           'setuptools',
       ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
       )

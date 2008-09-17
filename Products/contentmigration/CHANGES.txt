@@ -1,17 +1,42 @@
 Changelog
 =========
 
-
-1.0 - Unreleased
+1.0 - 2008-09-17
 ----------------
 
-* Modify CatalogWalker to root the search at the portal passed in. This
+- Update documentation to fit the code.
+  [pbugni]
+
+- Modify CatalogWalker to root the search at the portal passed in. This
   makes it possible to only migrate in parts of a site.
   [wichert]
 
+- Correct path handling, cleanup classifiers, make short description short.
+  [wichert]
 
-1.0b4 - ?
----------
+- Use standard naming convention for the contentmigration package.
+  [wichert]
 
-* First eggfied release.
+- Be more graceful with schema mismatches.
+  [wichert]
 
+- Replaced deprecated transaction.commit(1) with
+  transaction.savepoint(optimistic=True).
+  [stonor]
+
+
+1.0b4 - 2007-06-11
+------------------
+
+- Add import for os so egg can be built.
+  [derek_richardson]
+
+- Added missing `configure.zcml`.
+  [witsch]
+
+- Reorganize contentmigration trunk for eggification. If you are using the
+  trunk as a product, pin to the previous revision or change your external
+  to use src/Products/contentmigration.
+  [derek_richardson]
+
+- First eggified release.

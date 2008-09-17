@@ -1,4 +1,4 @@
-Content migration utilities  
+Content migration utilities
 by Martin Aspeli <optilude@gmx.net>
 
 Released under the GNU Lesser General Public License (LGPL) version 2.0
@@ -32,4 +32,3 @@ o An extension of this class called FieldActionMigrator uses the
 
 Please see the docstrings in walker.py, migrator.py and field.py for full
 details. For examples, see tests/cmtc.py and tests/testATFieldMigration.py.
-
