@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.1
----
+1.1 - 2009-03-05
+----------------
 
 - Add missing imports in various places.
   [wichert]
