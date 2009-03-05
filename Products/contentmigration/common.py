@@ -86,7 +86,6 @@ from App.Dialogs import MessageDialog
 from OFS.CopySupport import CopyError
 from OFS.CopySupport import eNotSupported
 from cgi import escape
-import sys
 
 def unrestricted_rename(self, id, new_id):
     """Rename a particular sub-object

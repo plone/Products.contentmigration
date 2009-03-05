@@ -1,8 +1,15 @@
 Changelog
 =========
 
-1.0.1
------
+1.1
+---
+
+- Add missing imports in various places.
+  [wichert]
+
+- Fix a bug in the permission migration logic, which caused the Manager
+  role to gain all permissions.
+  [ivo, wichert]
 
 
 1.0 - 2008-09-17

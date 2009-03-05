@@ -17,7 +17,6 @@ from Products.contentmigration.basemigrator.migrator import BaseMigrator
 from Products.contentmigration.basemigrator.migrator import BaseCMFMigrator
 from Products.contentmigration.basemigrator.migrator import ItemMigrationMixin
 from Products.contentmigration.basemigrator.migrator import FolderMigrationMixin
-from Products.contentmigration.basemigrator.migrator import UIDMigrator
 from Products.contentmigration.basemigrator.migrator import METADATA_MAPPING
 from Products.contentmigration.basemigrator.migrator import getPermissionMapping
 from Products.contentmigration.basemigrator.migrator import copyPermMap
@@ -151,11 +150,15 @@ class BaseInplaceMigrator(BaseMigrator):
         than the roles are also acquire. If roles is a tuple the roles aren't 
         acquired.
         """
+        _marker = []
+
         oldmap = self.ac_inherited_permissions
         newmap = getPermissionMapping(self.new.ac_inherited_permissions(1))
         for key, values in oldmap.items():
             old_p = Permission(key, values, self.old)
-            old_roles = old_p.getRoles()
+            old_roles = old_p.getRoles(default=_marker)
+            if old_roles is _marker:
+                continue
             new_values = newmap.get(key, ())
             new_p = Permission(key, new_values, self.new)
             new_p.setRoles(old_roles)

@@ -1,12 +1,15 @@
 """Support for migrators that place the destination object in a
 different location from the source object."""
 
+import logging
 from Acquisition import aq_inner
+from ZODB.POSException import ConflictError
 
 from Products.contentmigration.common import _createObjectByType
 
 from Products.contentmigration.inplace import (InplaceCMFItemMigrator,
                                                InplaceCMFFolderMigrator)
+logger = logging.getLogger(__file__)
 
 class TranslocatingMigratorMixin:
     """A migrator that places the destination object in a different
@@ -39,7 +42,7 @@ class TranslocatingMigratorMixin:
             except ConflictError:
                 raise
             except:
-                LOG.error('Failed to reorder object %s in %s' % (self.new,
+                logger.error('Failed to reorder object %s in %s' % (self.new,
                           self.parent), exc_info=True)
 
 class TranslocatingInplaceCMFItemMigrator(TranslocatingMigratorMixin,
