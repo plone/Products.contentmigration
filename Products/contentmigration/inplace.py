@@ -17,7 +17,6 @@ from Products.contentmigration.basemigrator.migrator import BaseMigrator
 from Products.contentmigration.basemigrator.migrator import BaseCMFMigrator
 from Products.contentmigration.basemigrator.migrator import ItemMigrationMixin
 from Products.contentmigration.basemigrator.migrator import FolderMigrationMixin
-from Products.contentmigration.basemigrator.migrator import UIDMigrator
 from Products.contentmigration.basemigrator.migrator import METADATA_MAPPING
 from Products.contentmigration.basemigrator.migrator import getPermissionMapping
 from Products.contentmigration.basemigrator.migrator import copyPermMap
