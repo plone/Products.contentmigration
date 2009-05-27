@@ -8,6 +8,7 @@ from copy import copy
 from Acquisition import aq_base
 from ZODB.POSException import ConflictError
 from AccessControl.Permission import Permission
+from AccessControl import SpecialUsers
 
 from Products.CMFCore.utils import getToolByName
 
@@ -128,8 +129,10 @@ class BaseInplaceMigrator(BaseMigrator):
         # ExtensibleMeatadata
         self.new.setCreators([])
         if not self.__ac_local_roles__:
-            self.new.manage_setLocalRoles(self.owner.getId(),
-                                          ['Owner'])
+            # Only set owner local role if the owner can be retrieved
+            if self.owner is not SpecialUsers.nobody:
+                self.new.manage_setLocalRoles(
+                    self.owner.getId(), ['Owner'])
         else:
             self.new.__ac_local_roles__ = copy(
                 self.__ac_local_roles__)

@@ -34,6 +34,7 @@ from OFS.IOrderSupport import IOrderedContainer
 from ZODB.POSException import ConflictError
 from zExceptions import BadRequest
 from AccessControl.Permission import Permission
+from AccessControl import SpecialUsers
 
 from Products.contentmigration.common import *
 from Products.contentmigration.common import _createObjectByType
@@ -274,8 +275,10 @@ class BaseMigrator:
         if hasattr(self.old, '__ac_local_roles_block__'):
             local_roles_block = self.old.__ac_local_roles_block__
         if not local_roles:
+            # Only set owner local role if the owner can be retrieved
             owner = self.old.getWrappedOwner()
-            self.new.manage_setLocalRoles(owner.getId(), ['Owner'])
+            if owner is not SpecialUsers.nobody:
+                self.new.manage_setLocalRoles(owner.getId(), ['Owner'])
         else:
             self.new.__ac_local_roles__ = copy(local_roles)
             if hasattr(self.old, '__ac_local_roles_block__'):
