@@ -1,0 +1,73 @@
+;-*-Doctest-*-
+================================
+Tests to address migration bugs
+================================
+
+Special cases to look for in fixing migration bugs.
+
+Issue #8784: content owned by no-longer existing member ends up with
+a bogus local roles entry, resulting in anonymous users gaining ownership
+of the content.
+
+    >>> from Products.CMFCore.permissions import ModifyPortalContent
+    >>> from Products.CMFCore.permissions import ManageUsers
+    >>> from Products.PloneTestCase.setup import _createObjectByType
+    >>> self.portal.manage_permission(
+    ...     ModifyPortalContent, ['Manager', 'Owner'], acquire=0)
+
+    Create a 'tempuser' to generate some content, then delete the user
+    prior to migration
+
+    >>> member_id = 'tempuser'
+    >>> self.portal.portal_membership.addMember(member_id, 'secret',
+    ...     ('Member', 'Manager'), [])
+    >>> user = self.portal.acl_users.getUserById(member_id)
+    >>> self.login(member_id)
+
+    >>> bar_doc = _createObjectByType(
+    ...     'Document', self.portal, id='bar', title='Bar')
+    >>> bar_doc.portal_type, bar_doc.getId(), bar_doc.Title()
+    ('Document', 'bar', 'Bar')
+
+    Demonstrate healthy local_roles before the migration
+
+    >>> inner_obj = getattr(bar_doc, 'aq_inner', bar_doc)
+    >>> local_roles = getattr(inner_obj, '__ac_local_roles__', None)
+    >>> member_id in local_roles.keys()
+    True
+    >>> None in local_roles.keys()
+    False
+
+    Delete the member
+
+    >>> self.loginAsPortalOwner()
+    >>> self.portal.portal_membership.deleteMembers([member_id])
+    ('tempuser',)
+
+    Local roles still healthy
+
+    >>> local_roles = getattr(inner_obj, '__ac_local_roles__', None)
+    >>> member_id in local_roles.keys()
+    False
+    >>> None in local_roles.keys()
+    False
+
+    >>> from transaction import commit
+    >>> commit()
+
+    >>> from Products.contentmigration.archetypes import ATItemMigrator
+    >>> bar_migrator = ATItemMigrator(bar_doc)
+    >>> bar_migrator.dst_portal_type = 'News Item'
+    >>> bar_migrator.dst_meta_type = 'ATNewsItem'
+    >>> bar_migrator.migrate()
+    >>> bar_news = self.portal.bar
+    >>> bar_news.portal_type, bar_news.getId(), bar_news.Title()
+    ('News Item', 'bar', 'Bar')
+
+    Confirm that after the migration, the local roles don't contain
+    the bogus 'None' key
+
+    >>> inner_obj = getattr(bar_news, 'aq_inner', bar_news)
+    >>> local_roles = getattr(inner_obj, '__ac_local_roles__', None)
+    >>> None in local_roles.keys()
+    False

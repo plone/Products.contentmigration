@@ -12,6 +12,7 @@ def test_suite():
             '../inplace.txt',
             '../translocate.txt',
             '../archetypes.txt',
+            '../bugfixes.txt',
             package='Products.contentmigration.tests',
             optionflags=ELLIPSIS,
             test_class=ContentMigratorTestCase),
