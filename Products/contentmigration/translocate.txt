@@ -6,6 +6,7 @@ Translocating Migrators
 Translocating migrators place the new object in a different location
 from the old object::
 
+    >>> self.addProfile('Products.contentmigration:testing')
     >>> from Products.PloneTestCase.setup import _createObjectByType
     >>> foo = _createObjectByType(
     ...     'Folder', self.portal, id='foo', title='Foo')

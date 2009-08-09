@@ -1,6 +1,7 @@
 from Testing.ZopeTestCase import Sandboxed
 from Products.contentmigration.migrator import InlineFieldActionMigrator
 from Products.contentmigration.walker import CustomQueryWalker
+from Products.contentmigration.tests.layer import TestLayer
 
 import transaction
 
@@ -39,6 +40,8 @@ class TestMigrator(InlineFieldActionMigrator):
     src_meta_type = 'ATDocument'
 
 class ContentMigratorTestCase(Sandboxed, PloneTestCase.PloneTestCase):
+
+    layer = TestLayer
 
     class Session(dict):
         def set(self, key, value):

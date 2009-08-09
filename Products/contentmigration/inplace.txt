@@ -11,6 +11,7 @@ interactions with the application (such as CMFMember/membrane
 contentish members) that make renaming them or having the old and the
 new side-by-side a pain.
 
+    >>> self.addProfile('Products.contentmigration:testing')
     >>> from Products.PloneTestCase.setup import _createObjectByType
     >>> cmf_foo = _createObjectByType(
     ...     'CMF Document', self.portal, id='foo', title='Foo')

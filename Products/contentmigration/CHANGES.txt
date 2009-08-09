@@ -4,6 +4,9 @@ Changelog
 1.2 - 2009-08-09
 ----------------
 
+- Fix tests to run on Plone 3.3.
+  [witsch]
+
 - Fix issue with leftover local role assignments for deleted users.
   [pbugni, rossp]
 
