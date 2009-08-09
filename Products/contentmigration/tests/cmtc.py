@@ -1,4 +1,3 @@
-from Testing import ZopeTestCase
 from Products.contentmigration.migrator import InlineFieldActionMigrator
 from Products.contentmigration.walker import CustomQueryWalker
 

@@ -35,8 +35,9 @@ from ZODB.POSException import ConflictError
 from zExceptions import BadRequest
 from AccessControl.Permission import Permission
 from AccessControl import SpecialUsers
+from Products.CMFCore.utils import getToolByName
 
-from Products.contentmigration.common import *
+from Products.contentmigration.common import unrestricted_rename
 from Products.contentmigration.common import _createObjectByType
 from Products.Archetypes.interfaces.referenceable import IReferenceable
 

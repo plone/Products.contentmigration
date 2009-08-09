@@ -34,6 +34,7 @@ from Products.contentmigration.catalogpatch import removeCatalogPatch
 ## LinguaPlone addon?
 try:
     from Products.LinguaPlone.public import registerType
+    registerType    # for pyflakes
 except ImportError:
     HAS_LINGUA_PLONE = False
 else:

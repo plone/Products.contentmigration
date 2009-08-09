@@ -2,8 +2,11 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-from Testing import ZopeTestCase
-from Products.contentmigration.tests.cmtc import *
+from Products.contentmigration.tests.cmtc import ContentMigratorTestCase
+from Products.contentmigration.tests.cmtc import makeUpper
+from Products.contentmigration.tests.cmtc import conditionallyAbortAttribute
+from Products.contentmigration.tests.cmtc import conditionallyAbortObject
+from Products.contentmigration.tests.cmtc import callAfterAttribute
 from Products.Archetypes.Storage.annotation import AnnotationStorage
 from Products.Archetypes.Storage import AttributeStorage
 
