@@ -24,7 +24,7 @@ extensions:
   the objects being migrated, BaseInlineMigrator only has a single object,
   stored in self.obj. This can be used with any walker.
 
-* An extension of this class called FieldActionMigrator uses the     
+* An extension of this class called FieldActionMigrator uses the
   action-based migration framework for Archetypes fields, found in field.py.
   Please refer to that file for full details, but briefly, you specify a list
   of attributes to migrate at the storage level, instructing the migrator
