@@ -32,7 +32,8 @@ of the content.
     Demonstrate healthy local_roles before the migration
 
     >>> inner_obj = getattr(bar_doc, 'aq_inner', bar_doc)
-    >>> local_roles = getattr(inner_obj, '__ac_local_roles__', None)
+    >>> marker = object()
+    >>> local_roles = getattr(inner_obj, '__ac_local_roles__', marker)
     >>> member_id in local_roles.keys()
     True
     >>> None in local_roles.keys()
@@ -46,7 +47,7 @@ of the content.
 
     Local roles still healthy
 
-    >>> local_roles = getattr(inner_obj, '__ac_local_roles__', None)
+    >>> local_roles = getattr(inner_obj, '__ac_local_roles__', marker)
     >>> member_id in local_roles.keys()
     False
     >>> None in local_roles.keys()
@@ -68,6 +69,6 @@ of the content.
     the bogus 'None' key
 
     >>> inner_obj = getattr(bar_news, 'aq_inner', bar_news)
-    >>> local_roles = getattr(inner_obj, '__ac_local_roles__', None)
-    >>> None in local_roles.keys()
-    False
+    >>> local_roles = getattr(inner_obj, '__ac_local_roles__', marker)
+    >>> local_roles is None
+    True
