@@ -30,7 +30,7 @@ from Acquisition import aq_inner
 from DateTime import DateTime
 from Persistence import PersistentMapping
 from OFS.Uninstalled import BrokenClass
-from OFS.IOrderSupport import IOrderedContainer
+from OFS.interfaces import IOrderedContainer
 from ZODB.POSException import ConflictError
 from zExceptions import BadRequest
 from AccessControl.Permission import Permission
@@ -39,7 +39,7 @@ from Products.CMFCore.utils import getToolByName
 
 from Products.contentmigration.common import unrestricted_rename
 from Products.contentmigration.common import _createObjectByType
-from Products.Archetypes.interfaces.referenceable import IReferenceable
+from Products.Archetypes.interfaces import IReferenceable
 
 LOG = logging.getLogger('ATCT.migration')
 
@@ -186,7 +186,7 @@ class BaseMigrator:
             # may raise an exception, catch it later
             method()
         # preserve position on rename
-        self.need_order = IOrderedContainer.isImplementedBy(self.parent)
+        self.need_order = IOrderedContainer.providedBy(self.parent)
         if self.need_order:
             self._position = self.parent.getObjectPosition(self.orig_id)
         self.renameOld()
@@ -476,7 +476,7 @@ class FolderMigrationMixin(ItemMigrationMixin):
         is renamed. Elsewise the objects would be reindex more often.
         """
 
-        orderAble = IOrderedContainer.isImplementedBy(self.old)
+        orderAble = IOrderedContainer.providedBy(self.old)
         orderMap = {}
         subobjs = {}
 
@@ -544,7 +544,7 @@ class FolderMigrationMixin(ItemMigrationMixin):
         # in CMF 1.5 Topic is orderable while ATCT's Topic is not orderable
         # order objects only when old *and* new are orderable we can't check
         # when creating the map because self.new == None.
-        if self.orderAble and IOrderedContainer.isImplementedBy(self.new):
+        if self.orderAble and IOrderedContainer.providedBy(self.new):
             orderMap = self.orderMap
             for id, pos in orderMap.items():
                 self.new.moveObjectToPosition(id, pos)
@@ -566,7 +566,7 @@ class UIDMigrator:
     def migrate_at_uuid(self):
         """Migrate AT universal uid
         """
-        if not IReferenceable.isImplementedBy(self.old):
+        if not IReferenceable.providedBy(self.old):
             return # old object doesn't support AT uuids
         uid = self.old.UID()
         self.old._uncatalogUID(self.parent)

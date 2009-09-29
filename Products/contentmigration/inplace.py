@@ -12,7 +12,7 @@ from AccessControl import SpecialUsers
 
 from Products.CMFCore.utils import getToolByName
 
-from Products.Archetypes.interfaces.referenceable import IReferenceable
+from Products.Archetypes.interfaces import IReferenceable
 
 from Products.contentmigration.basemigrator.migrator import BaseMigrator
 from Products.contentmigration.basemigrator.migrator import BaseCMFMigrator
@@ -307,7 +307,7 @@ class InplaceUIDMigrator:
     def beforeChange_at_uuid(self):
         """Load AT universal uid."""
         self._checkLoadAttr('UID')
-        if IReferenceable.isImplementedBy(self.old):
+        if IReferenceable.providedBy(self.old):
             self.UID = self.old.UID()
             self.old._uncatalogUID(self.parent)
         else:
