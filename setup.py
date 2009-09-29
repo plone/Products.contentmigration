@@ -1,7 +1,7 @@
 import os
 from setuptools import setup, find_packages
 
-version = '1.2'
+version = '1.3'
 
 def read(rnames):
     return open(os.path.join(*rnames.split("/"))).read()
