@@ -1,5 +1,7 @@
 Content migration utilities
-by Martin Aspeli <optilude@gmx.net>
+===========================
+
+by Martin Aspeli <optilude@gmx.net> and others
 
 Released under the GNU Lesser General Public License (LGPL) version 2.0
 

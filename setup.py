@@ -1,28 +1,20 @@
-import os
 from setuptools import setup, find_packages
 
-version = '1.3'
-
-def read(rnames):
-    return open(os.path.join(*rnames.split("/"))).read()
+version = '2.0a1'
 
 setup(name='Products.contentmigration',
       version=version,
       description="A generic content migration framework for Plone.",
-      long_description=(
-        read('Products/contentmigration/README.txt')
-        + '\n\n' +
-        read('Products/contentmigration/CHANGES.txt')
-        ),
+      long_description=open("README.txt").read() + "\n" +
+                       open("CHANGES.txt").read(),
       classifiers=[
         "Framework :: Plone",
         "Programming Language :: Python",
-        "Topic :: Software Development :: Libraries :: Python Modules",
         ],
       keywords='Plone Archetypes ATContentTypes',
       author='Martin Aspeli (and others)',
-      author_email='optilude@gmx.net',
-      url='',
+      author_email='plone-developers@lists.sourceforge.net',
+      url='http://pypi.python.org/pypi/Products.contentmigration',
       license='LGPL',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['Products'],
@@ -31,4 +23,4 @@ setup(name='Products.contentmigration',
       install_requires=[
           'setuptools',
       ],
-      )
+)
