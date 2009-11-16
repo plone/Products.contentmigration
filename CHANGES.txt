@@ -4,6 +4,10 @@ Changelog
 2.0b1 - Unreleased
 ------------------
 
+- Make the _createObjectByType function call the _constructInstance method
+  of the FTI, rather than trying to duplicate its logic.  This adds
+  compatibility with CMF 2.2.
+  [davisagli]
 
 2.0a1 - 2009-11-14
 ------------------

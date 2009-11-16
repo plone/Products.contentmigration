@@ -64,22 +64,13 @@ def _createObjectByType(type_name, container, id, *args, **kw):
     if not fti:
         raise ValueError, 'Invalid type %s' % type_name
 
-    # we have to do it all manually :(
-    p = container.manage_addProduct[fti.product]
-    m = getattr(p, fti.factory, None)
-    if m is None:
-        raise ValueError, ('Product factory for %s was invalid' %
-                           fti.getId())
+    ob = fti._constructInstance(container, id, *args, **kw)
 
-    # construct the object
-    m(id, *args, **kw)
-    ob = container._getOb( id )
-    
-    if hasattr(ob, '_setPortalTypeName'):
+    # in CMF <2.2 the portal type hasn't been set yet
+    if getattr(ob, 'portal_type', None) is None and hasattr(ob, '_setPortalTypeName'):
         ob._setPortalTypeName(fti.getId())
     
     return ob
-    #return fti._finishConstruction(ob)
 
 from Acquisition import aq_base
 from App.Dialogs import MessageDialog
