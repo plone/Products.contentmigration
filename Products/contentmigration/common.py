@@ -67,7 +67,7 @@ def _createObjectByType(type_name, container, id, *args, **kw):
     ob = fti._constructInstance(container, id, *args, **kw)
 
     # in CMF <2.2 the portal type hasn't been set yet
-    if getattr(ob, 'portal_type', None) is None and hasattr(ob, '_setPortalTypeName'):
+    if 'portal_type' not in ob.__dict__ and hasattr(ob, '_setPortalTypeName'):
         ob._setPortalTypeName(fti.getId())
     
     return ob

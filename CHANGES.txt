@@ -1,8 +1,12 @@
 Changelog
 =========
 
-2.0b1 - unreleased
+2.0a3 - 2009-11-15
 ------------------
+
+- Fix issue with my adjustment to the _createObjectByType function where the
+  portal_type wasn't getting set properly in Plone 3.
+  [davisagli]
 
 
 2.0a2 - 2009-11-15
