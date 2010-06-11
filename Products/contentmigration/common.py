@@ -41,14 +41,6 @@ else:
     HAS_LINGUA_PLONE = True
     del registerType
 
-# archetypes.schemaextender addon?
-try:
-    from archetypes.schemaextender.extender import disableCache
-    disableCache
-except ImportError:
-    def disableCache(request):
-        pass
-
 LOG = logging.getLogger('ATCT.migration')
 
 # This method was coded by me (Tiran) for CMFPlone. I'm maintaining a copy here

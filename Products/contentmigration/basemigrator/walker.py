@@ -26,7 +26,6 @@ import traceback
 import transaction
 from cStringIO import StringIO
 
-from Products.contentmigration.common import disableCache
 from Products.contentmigration.common import HAS_LINGUA_PLONE
 from Products.contentmigration.common import registerWalker
 from ZODB.POSException import ConflictError
@@ -34,8 +33,19 @@ from Products.CMFCore.utils import getToolByName
 
 LOG = logging.getLogger('ATCT.migration')
 
+# archetypes.schemaextender addon?
+try:
+    # beware of moving this, the top-level package has an archetypes module
+    from archetypes.schemaextender.extender import disableCache
+    disableCache
+except ImportError:
+    def disableCache(request):
+        pass
+
+
 class StopWalking(StopIteration):
     pass
+
 
 class MigrationError(RuntimeError):
     def __init__(self, path, migrator, traceback):
