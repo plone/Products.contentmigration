@@ -31,7 +31,7 @@ from Products.CMFCore.utils import getToolByName
 from Products.contentmigration.catalogpatch import applyCatalogPatch
 from Products.contentmigration.catalogpatch import removeCatalogPatch
 
-## LinguaPlone addon?
+# LinguaPlone addon?
 try:
     from Products.LinguaPlone.public import registerType
     registerType    # for pyflakes
@@ -40,6 +40,14 @@ except ImportError:
 else:
     HAS_LINGUA_PLONE = True
     del registerType
+
+# archetypes.schemaextender addon?
+try:
+    from archetypes.schemaextender.extender import disableCache
+    disableCache
+except ImportError:
+    def disableCache(request):
+        pass
 
 LOG = logging.getLogger('ATCT.migration')
 

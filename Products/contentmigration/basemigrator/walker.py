@@ -26,7 +26,7 @@ import traceback
 import transaction
 from cStringIO import StringIO
 
-#from Products.contentmigration.common import LOG
+from Products.contentmigration.common import disableCache
 from Products.contentmigration.common import HAS_LINGUA_PLONE
 from Products.contentmigration.common import registerWalker
 from ZODB.POSException import ConflictError
@@ -106,6 +106,11 @@ class Walker:
         self.out = StringIO()
         self.counter = 0
         self.errors = []
+
+        # Disable schema cache
+        request = getattr(portal, 'REQUEST', None)
+        if request is not None:
+            disableCache(request)
 
     def go(self, **kwargs):
         """runner

@@ -4,6 +4,9 @@ Changelog
 2.0b1 - unreleased
 ------------------
 
+- Added support for archetypes.schemaextender >= 2.0 and disable the schema
+  cache during migrations.
+  [hannosch]
 
 2.0a3 - 2009-11-15
 ------------------
