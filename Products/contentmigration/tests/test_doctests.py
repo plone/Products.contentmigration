@@ -1,6 +1,4 @@
-import unittest
-
-from zope.testing.doctest import ELLIPSIS, REPORT_ONLY_FIRST_FAILURE
+from doctest import ELLIPSIS
 
 from Testing.ZopeTestCase import ZopeDocFileSuite
 
@@ -14,12 +12,9 @@ def test_suite():
             '../archetypes.txt',
             '../bugfixes.txt',
             package='Products.contentmigration.tests',
-            optionflags=ELLIPSIS | REPORT_ONLY_FIRST_FAILURE,
+            optionflags=ELLIPSIS,
             test_class=ContentMigratorTestCase),
         )
 
     from unittest import TestSuite
     return TestSuite(suites)
-
-if __name__ == "__main__":
-    unittest.main(defaultTest='test_suite')

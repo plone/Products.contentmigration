@@ -4,6 +4,9 @@ Changelog
 2.0b1 - unreleased
 ------------------
 
+- Avoid deprecation warnings under Zope 2.13.
+  [hannosch]
+
 - Added support for archetypes.schemaextender >= 2.0 and disable the schema
   cache during migrations.
   [hannosch]
