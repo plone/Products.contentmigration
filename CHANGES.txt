@@ -4,6 +4,8 @@ Changelog
 2.0.1 - unreleased
 ------------------
 
+- Unlock locked objects prior to migrating them.
+  [ggozad]
 
 2.0 - 2010-07-18
 ----------------

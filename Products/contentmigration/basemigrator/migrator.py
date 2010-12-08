@@ -36,10 +36,10 @@ from zExceptions import BadRequest
 from AccessControl.Permission import Permission
 from AccessControl import SpecialUsers
 from Products.CMFCore.utils import getToolByName
-
 from Products.contentmigration.common import unrestricted_rename
 from Products.contentmigration.common import _createObjectByType
 from Products.Archetypes.interfaces import IReferenceable
+from plone.locking.interfaces import ILockable
 
 LOG = logging.getLogger('ATCT.migration')
 
@@ -180,6 +180,10 @@ class BaseMigrator:
         """Migrates the object
         """
         beforeChange, afterChange = self.getMigrationMethods()
+
+        lockable = ILockable(self.old, None)
+        if lockable and lockable.locked():
+            lockable.unlock()
 
         for method in beforeChange:
             __traceback_info__ = (self, method, self.old, self.orig_id)

@@ -72,3 +72,23 @@ of the content.
     >>> local_roles = getattr(inner_obj, '__ac_local_roles__', marker)
     >>> local_roles is None
     True
+
+Locked objects should be unlocked before being migrated
+
+    >>> self.loginAsPortalOwner()
+    >>> foo_doc = _createObjectByType(
+    ...     'Document', self.portal, id='foo', title='Foo')
+    >>> foo_doc.portal_type, foo_doc.getId(), foo_doc.Title()
+    ('Document', 'foo', 'Foo')
+    >>> commit()
+
+    >>> foo_doc = self.portal.foo
+    >>> from plone.locking.interfaces import ILockable
+    >>> ILockable(foo_doc).lock()
+    >>> foo_migrator = ATItemMigrator(foo_doc)
+    >>> foo_migrator.dst_portal_type = 'News Item'
+    >>> foo_migrator.dst_meta_type = 'ATNewsItem'
+    >>> foo_migrator.migrate()
+    >>> foo_news = self.portal.foo
+    >>> foo_news.portal_type, foo_news.getId(), foo_news.Title()
+    ('News Item', 'foo', 'Foo')
