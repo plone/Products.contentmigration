@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.0.1 - unreleased
+2.0.1 - 2010-12-08
 ------------------
 
 - Unlock locked objects prior to migrating them.
