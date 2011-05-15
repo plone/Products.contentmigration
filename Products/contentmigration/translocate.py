@@ -9,7 +9,7 @@ from Products.contentmigration.common import _createObjectByType
 
 from Products.contentmigration.inplace import (InplaceCMFItemMigrator,
                                                InplaceCMFFolderMigrator)
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 class TranslocatingMigratorMixin:
     """A migrator that places the destination object in a different

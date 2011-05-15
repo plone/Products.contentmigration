@@ -4,6 +4,8 @@ Changelog
 2.0.2 - unreleased
 ------------------
 
+- Use module name, not the full file path, to register with the logging module.
+  [mj]
 
 2.0.1 - 2010-12-08
 ------------------
