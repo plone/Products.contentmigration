@@ -41,3 +41,26 @@ another making use of the schemata for field migration::
     >>> bar_news = self.portal.bar
     >>> bar_news.portal_type, bar_news.getId(), bar_news.Title()
     ('News Item', 'bar', 'Bar')
+
+
+Folderish Contents:
+
+    >>> foo_folder = _createObjectByType(
+    ...     'Folder', self.portal, id='fold1', title='Fold1')
+    >>> foo_folder.portal_type, foo_folder.getId(), foo_folder.Title()
+    ('Folder', 'fold1', 'Fold1')
+    >>> foo_folder.portal_type
+    'Folder'
+
+    >>> from transaction import commit
+    >>> commit()
+
+    >>> from Products.contentmigration.archetypes import ATFolderMigrator
+    >>> ff_migrator = ATFolderMigrator(foo_folder)
+    >>> 
+    >>> ff_migrator.dst_portal_type = 'Folder'
+    >>> ff_migrator.dst_meta_type = 'ATFolder'
+    >>> ff_migrator.migrate()
+    >>> foo_folder = self.portal.fold1
+    >>> foo_folder.Title()
+    'Fold1'

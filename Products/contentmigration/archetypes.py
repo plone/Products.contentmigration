@@ -156,7 +156,7 @@ class ATItemMigrator(ATItemMigratorMixin, ItemMigrationMixin,
     """Migrator for items implementing the AT API."""
     pass
 
-class ATFolderMigrator(FolderMigrationMixin, UIDMigrator,
+class ATFolderMigrator(ATItemMigratorMixin, FolderMigrationMixin, UIDMigrator,
                        BaseATMigrator):
     """Migrator from folderish items implementing the AT API."""
     pass
@@ -174,7 +174,8 @@ class InplaceATItemMigrator(ATItemMigratorMixin,
     """Migrator for items implementing the AT API."""
     pass
 
-class InplaceATFolderMigrator(InplaceFolderMigrationMixin,
+class InplaceATFolderMigrator(ATItemMigratorMixin,
+                              InplaceFolderMigrationMixin,
                               InplaceUIDMigrator,
                               BaseInplaceATMigrator):
     """Migrator from folderish items implementing the AT API."""
