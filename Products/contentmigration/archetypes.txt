@@ -64,3 +64,13 @@ Folderish Contents:
     >>> foo_folder = self.portal.fold1
     >>> foo_folder.Title()
     'Fold1'
+
+    >>> from Products.contentmigration.archetypes import InplaceATFolderMigrator
+    >>> ff_migrator = InplaceATFolderMigrator(foo_folder)
+    >>> 
+    >>> ff_migrator.dst_portal_type = 'Folder'
+    >>> ff_migrator.dst_meta_type = 'ATFolder'
+    >>> ff_migrator.migrate()
+    >>> foo_folder = self.portal.fold1
+    >>> foo_folder.Title()
+    'Fold1'
