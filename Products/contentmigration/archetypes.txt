@@ -55,6 +55,7 @@ Folderish Contents:
 Add an simple object inside the folder:
 
     >>> foo_folder.invokeFactory('Document', id='doc1', Title='Document 1')
+    'doc1'
 
     >>> from transaction import commit
     >>> commit()
@@ -79,4 +80,6 @@ Add an simple object inside the folder:
     >>> foo_folder.Title()
     'Fold1'
 
+    >>> from transaction import commit
+    >>> commit()
 

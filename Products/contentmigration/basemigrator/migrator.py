@@ -36,8 +36,10 @@ from zExceptions import BadRequest
 from AccessControl.Permission import Permission
 from AccessControl import SpecialUsers
 from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.CMFCatalogAware import WorkflowAware
 from Products.contentmigration.common import unrestricted_rename
 from Products.contentmigration.common import _createObjectByType
+from Products.contentmigration.utils import patch, undoPatch
 from Products.Archetypes.interfaces import IReferenceable
 from plone.locking.interfaces import ILockable
 
@@ -469,7 +471,16 @@ class FolderMigrationMixin(ItemMigrationMixin):
     """Migrates a folderish object
     """
     isFolderish = True
-    
+
+    def beforeChange_patchNotifyWorkflowCreatedMethod(self):
+        def notifyWorkflowCreated(self):
+            """
+              Do not notifyWorkflowCreated...
+            """
+            pass
+
+        patch(WorkflowAware, 'notifyWorkflowCreated', notifyWorkflowCreated)
+
     def beforeChange_storeSubojects(self):
         """store subobjects from old folder
         
@@ -552,6 +563,10 @@ class FolderMigrationMixin(ItemMigrationMixin):
             orderMap = self.orderMap
             for id, pos in orderMap.items():
                 self.new.moveObjectToPosition(id, pos)
+
+    def afterChange_restoreNotifyWorkflowCreatedMethod(self):
+        undoPatch(WorkflowAware, 'notifyWorkflowCreated')
+
 
 class UIDMigrator:
     """Migrator class for migration CMF and AT uids

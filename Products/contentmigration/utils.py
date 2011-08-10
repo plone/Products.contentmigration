@@ -80,4 +80,18 @@ def unrestricted_move(self, ob):
     ob._postCopy(self, op=1)
     # try to make ownership implicit if possible
     ob.manage_changeOwnershipType(explicit=0)
-    
+
+
+def getSavedAttrName(attrName):
+    return '_old_%s' % attrName
+
+def patch(context, originalAttrName, replacement):
+    """ Default handler that preserves original method """
+    OLD_NAME = getSavedAttrName(originalAttrName)
+    if not hasattr(context, OLD_NAME):
+        setattr(context, OLD_NAME, getattr(context, originalAttrName))
+    setattr(context, originalAttrName, replacement)
+
+def undoPatch(context, originalAttrName):
+    OLD_NAME = getSavedAttrName(originalAttrName)
+    setattr(context, originalAttrName, getattr(context, OLD_NAME))
