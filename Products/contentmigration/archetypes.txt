@@ -52,6 +52,10 @@ Folderish Contents:
     >>> foo_folder.portal_type
     'Folder'
 
+Add an simple object inside the folder:
+
+    >>> foo_folder.invokeFactory('Document', id='doc1', Title='Document 1')
+
     >>> from transaction import commit
     >>> commit()
 
@@ -74,3 +78,5 @@ Folderish Contents:
     >>> foo_folder = self.portal.fold1
     >>> foo_folder.Title()
     'Fold1'
+
+
