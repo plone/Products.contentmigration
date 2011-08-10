@@ -22,13 +22,15 @@ from Products.contentmigration.translocate import TranslocatingMigratorMixin
 
 _marker = []
 
+
 def migrate_dummy(self):
     """Do nothing.  Used to override inherited methods we don't
     want to run."""
     pass
 
+
 class ATMigratorMixin:
-    """Migrates content of one AT type to another AT type.""" 
+    """Migrates content of one AT type to another AT type."""
 
     fields_map = {}
     only_fields_map = False
@@ -64,7 +66,6 @@ class ATMigratorMixin:
     def beforeChange_references(self):
         """Migrate references annotation."""
         # Set the flag so that references aren't deleted
-        cp_refs = getattr(self.old, '_v_cp_refs', _marker)
         self.old._v_cp_refs = 1
         # Move the references annotation storage
         if hasattr(self.old, REFERENCE_ANNOTATION):
@@ -88,9 +89,11 @@ class ATMigratorMixin:
         else:
             del self.new._v_is_cp
 
+
 class BaseATMigrator(ATMigratorMixin, BaseCMFMigrator):
     """Migrates content of one AT type to another AT type."""
     pass
+
 
 class ATItemMigratorMixin:
     """Migrator for items implementing the AT API."""
@@ -109,7 +112,7 @@ class ATItemMigratorMixin:
         typesTool = getToolByName(self.parent, 'portal_types')
         fti = typesTool.getTypeInfo(self.dst_portal_type)
         archetype = getType(self.dst_meta_type, fti.product)
-        new_schema = archetype['klass'].schema 
+        new_schema = archetype['klass'].schema
 
         if self.only_fields_map:
             old_field_names = self.fields_map.keys()
@@ -151,10 +154,12 @@ class ATItemMigratorMixin:
         self.new = getattr(aq_inner(self.parent).aq_explicit,
                            self.new_id)
 
+
 class ATItemMigrator(ATItemMigratorMixin, ItemMigrationMixin,
                      UIDMigrator, BaseATMigrator):
     """Migrator for items implementing the AT API."""
     pass
+
 
 class ATFolderMigrator(ATItemMigratorMixin, FolderMigrationMixin, UIDMigrator,
                        BaseATMigrator):
@@ -163,9 +168,11 @@ class ATFolderMigrator(ATItemMigratorMixin, FolderMigrationMixin, UIDMigrator,
 
 # Inplace migrators
 
+
 class BaseInplaceATMigrator(ATMigratorMixin, BaseInplaceCMFMigrator):
     """Migrates content of one AT type to another AT type inplace."""
     pass
+
 
 class InplaceATItemMigrator(ATItemMigratorMixin,
                             InplaceItemMigrationMixin,
@@ -173,6 +180,7 @@ class InplaceATItemMigrator(ATItemMigratorMixin,
                             BaseInplaceATMigrator):
     """Migrator for items implementing the AT API."""
     pass
+
 
 class InplaceATFolderMigrator(ATItemMigratorMixin,
                               InplaceFolderMigrationMixin,
@@ -183,10 +191,12 @@ class InplaceATFolderMigrator(ATItemMigratorMixin,
 
 # Translocating migrators
 
+
 class TranslocatingInplaceATItemMigrator(TranslocatingMigratorMixin,
                                          InplaceATItemMigrator):
     """Inplace migrator for items implementing the AT API."""
     pass
+
 
 class TranslocatingInplaceATFolderMigrator(TranslocatingMigratorMixin,
                                            InplaceATFolderMigrator):

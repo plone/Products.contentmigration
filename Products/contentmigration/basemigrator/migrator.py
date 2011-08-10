@@ -18,7 +18,7 @@ are permitted provided that the following conditions are met:
    to endorse or promote products derived from this software without specific
    prior written permission.
 """
-__author__  = 'Christian Heimes <tiran@cheimes.de>'
+__author__ = 'Christian Heimes <tiran@cheimes.de>'
 __docformat__ = 'restructuredtext'
 
 from copy import copy
@@ -50,22 +50,22 @@ _marker = []
 # Dublin Core mapping
 # accessor, mutator, fieldname
 DC_MAPPING = (
-    ('Title', 'setTitle',                   None),
-    ('Creator', None,                         None),
-    ('Subject', 'setSubject',               'subject'),
-    ('Description', 'setDescription',       'description'),
-    ('Publisher', None,                       None),
-    ('Contributors', 'setContributors',     'contributors'),
-    ('Date', None,                            None),
-    ('CreationDate', None,                    None),
-    ('EffectiveDate', 'setEffectiveDate',   'effectiveDate'),
+    ('Title', 'setTitle', None),
+    ('Creator', None, None),
+    ('Subject', 'setSubject', 'subject'),
+    ('Description', 'setDescription', 'description'),
+    ('Publisher', None, None),
+    ('Contributors', 'setContributors', 'contributors'),
+    ('Date', None, None),
+    ('CreationDate', None, None),
+    ('EffectiveDate', 'setEffectiveDate', 'effectiveDate'),
     ('ExpirationDate', 'setExpirationDate', 'expirationDate'),
-    ('ModificationDate', None,                None),
-    ('Type', None,                            None),
-    ('Format', 'setFormat',                 None),
-    ('Identifier', None,                      None),
-    ('Language', 'setLanguage',             'language'),
-    ('Rights', 'setRights',                 'rights'),
+    ('ModificationDate', None, None),
+    ('Type', None, None),
+    ('Format', 'setFormat', None),
+    ('Identifier', None, None),
+    ('Language', 'setLanguage', 'language'),
+    ('Rights', 'setRights', 'rights'),
 
     # allowDiscussion is not part of the official DC metadata set
     #('allowDiscussion','isDiscussable','allowDiscussion'),
@@ -77,15 +77,15 @@ for accessor, mutator, field in DC_MAPPING:
     if accessor and mutator:
         METADATA_MAPPING.append((accessor, mutator))
 
+
 def copyPermMap(old):
     """bullet proof copy
     """
     new = PersistentMapping()
-    for k,v in old.items():
-        nk = copy(k)
-        nv = copy(v)
+    for k, v in old.items():
         new[k] = v
     return new
+
 
 def getPermissionMapping(acperm):
     """Converts the list from ac_inherited_permissions into a dict
@@ -94,6 +94,7 @@ def getPermissionMapping(acperm):
     for entry in acperm:
         result[entry[0]] = entry[1]
     return result
+
 
 class BaseMigrator:
     """Migrates an object to the new type
@@ -133,7 +134,7 @@ class BaseMigrator:
     dst_meta_type = None
     map = {}
 
-    def __init__(self, obj, src_portal_type = None, dst_portal_type = None,
+    def __init__(self, obj, src_portal_type=None, dst_portal_type=None,
                  **kwargs):
         self.old = aq_inner(obj)
         self.orig_id = self.old.getId()
@@ -149,18 +150,17 @@ class BaseMigrator:
 
         # safe id generation
         while hasattr(aq_base(self.parent), self.old_id):
-            self.old_id+='X'
-        
+            self.old_id += 'X'
         msg = "%s (%s -> %s)" % (self.old.absolute_url(1), self.src_portal_type,
                                  self.dst_portal_type)
-        #LOG.debug(msg)
+        LOG.debug(msg)
 
     def getMigrationMethods(self):
         """Calculates a nested list of callables used to migrate the old object
         """
         beforeChange = []
-        methods      = []
-        lastmethods  = []
+        methods = []
+        lastmethods = []
         for name in dir(self):
             if name.startswith('beforeChange_'):
                 method = getattr(self, name)
@@ -175,7 +175,7 @@ class BaseMigrator:
                 if callable(method):
                     lastmethods.append(method)
 
-        afterChange = methods+[self.custom, self.finalize]+lastmethods
+        afterChange = methods + [self.custom, self.finalize] + lastmethods
         return (beforeChange, afterChange, )
 
     def migrate(self, unittest=0):
@@ -246,7 +246,6 @@ class BaseMigrator:
             __traceback_info__ = (self.new, id, value, typ)
             if self.new.hasProperty(id):
                 self.new._delProperty(id)
-            
             # continue if the object already has this attribute
             if getattr(aq_base(self.new), id, _marker) is not _marker:
                 continue
@@ -270,7 +269,7 @@ class BaseMigrator:
             # not very nice but at least it works
             # trying to get/set the owner via getOwner(), changeOwnership(...)
             # did not work, at least not with plone 1.x, at 1.0.1, zope 2.6.2
-            self.new._owner = self.old.getOwner(info = 1)
+            self.new._owner = self.old.getOwner(info=1)
 
     def migrate_localroles(self):
         """Migrate local roles
@@ -279,8 +278,6 @@ class BaseMigrator:
         # clean the auto-generated creators by Archetypes ExtensibleMeatadata
         self.new.setCreators([])
         local_roles = self.old.__ac_local_roles__
-        if hasattr(self.old, '__ac_local_roles_block__'):
-            local_roles_block = self.old.__ac_local_roles_block__
         if not local_roles:
             # Only set owner local role if the owner can be retrieved
             owner = self.old.getWrappedOwner()
@@ -291,7 +288,7 @@ class BaseMigrator:
             if hasattr(self.old, '__ac_local_roles_block__'):
                 self.new.__ac_local_roles_block__ = (
                     self.old.__ac_local_roles_block__)
-            
+
     def migrate_user_roles(self):
         """Migrate roles added by users
         """
@@ -305,9 +302,8 @@ class BaseMigrator:
 
     def migrate_permission_settings(self):
         """Migrate permission settings (permission <-> role)
-        
         The acquire flag is coded into the type of the sequence. If roles is a list
-        than the roles are also acquire. If roles is a tuple the roles aren't 
+        than the roles are also acquire. If roles is a tuple the roles aren't
         acquired.
         """
         oldmap = getPermissionMapping(self.old.ac_inherited_permissions(1))
@@ -363,7 +359,7 @@ class BaseMigrator:
         Must be implemented by the real Migrator
         """
         raise NotImplementedError
-        
+
     def finalize(self):
         """Finalize construction (called between)
         """
@@ -377,6 +373,7 @@ class BaseMigrator:
             ob._setPortalTypeName(fti.getId())
 
         #self.new.reindexObject(['meta_type', 'portal_type'], update_metadata=False)
+
 
 class BaseCMFMigrator(BaseMigrator):
     """Base migrator for CMF objects
@@ -431,6 +428,7 @@ class BaseCMFMigrator(BaseMigrator):
         self.new.creation_date = DateTime(self.old_creation_date)
         self.new.setModificationDate(DateTime(self.old_mod_date))
 
+
 class ItemMigrationMixin:
     """Migrates a non folderish object
     """
@@ -467,6 +465,7 @@ class ItemMigrationMixin:
                 LOG.error('Failed to reorder object %s in %s' % (self.new,
                           self.parent), exc_info=True)
 
+
 class FolderMigrationMixin(ItemMigrationMixin):
     """Migrates a folderish object
     """
@@ -483,10 +482,8 @@ class FolderMigrationMixin(ItemMigrationMixin):
 
     def beforeChange_storeSubojects(self):
         """store subobjects from old folder
-        
         This methods gets all subojects from the old folder and removes them from the
         old. It also preservers the folder order in a dict.
-        
         For performance reasons the objects are removed from the old folder before it
         is renamed. Elsewise the objects would be reindex more often.
         """
@@ -508,7 +505,7 @@ class FolderMigrationMixin(ItemMigrationMixin):
                     orderMap[id] = self.old.getObjectPosition(id)
                 except AttributeError:
                     LOG.debug("Broken OrderSupport", exc_info=True)
-                    orderAble=0
+                    orderAble = 0
             subobjs[id] = aq_base(obj)
             # delOb doesn't call manage_afterAdd which safes some time because it
             # doesn't unindex an object. The migrate children method uses
@@ -536,7 +533,7 @@ class FolderMigrationMixin(ItemMigrationMixin):
             # we have to use _setObject instead of _setOb because it adds the object
             # to folder._objects but also reindexes all objects.
             __traceback_info__ = __traceback_info__ = ('migrate_children',
-                          self.old, self.orig_id, 'Migrating subobject %s'%id)
+                          self.old, self.orig_id, 'Migrating subobject %s' % id)
             try:
                 self.new._setObject(id, obj, set_owner=0)
             except BadRequest:
@@ -571,29 +568,31 @@ class FolderMigrationMixin(ItemMigrationMixin):
 class UIDMigrator:
     """Migrator class for migration CMF and AT uids
     """
-    
+
     def migrate_cmf_uid(self):
         """Migrate CMF uids
         """
         uidhandler = getToolByName(self.parent, 'portal_uidhandler', None)
         if uidhandler is None:
-            return # no uid handler available
+            return  # no uid handler available
         uid = uidhandler.queryUid(self.old, default=None)
         if uid is not None:
             uidhandler.setUid(self.new, uid, check_uniqueness=False)
-            
+
     def migrate_at_uuid(self):
         """Migrate AT universal uid
         """
         if not IReferenceable.providedBy(self.old):
-            return # old object doesn't support AT uuids
+            return  # old object doesn't support AT uuids
         uid = self.old.UID()
         self.old._uncatalogUID(self.parent)
         self.new._setUID(uid)
 
+
 class CMFItemMigrator(ItemMigrationMixin, UIDMigrator, BaseCMFMigrator):
     """Migrator for items implementing the CMF API
     """
+
 
 class CMFFolderMigrator(FolderMigrationMixin, UIDMigrator, BaseCMFMigrator):
     """Migrator from folderish items implementing the CMF API

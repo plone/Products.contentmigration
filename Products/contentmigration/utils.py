@@ -21,20 +21,20 @@ def unrestricted_move(self, ob):
     checks."""
     orig_id = ob.getId()
     if not ob.cb_isMoveable():
-        raise CopyError, eNotSupported % escape(orig_id)
+        raise CopyError(eNotSupported % escape(orig_id))
 
     try:
         ob._notifyOfCopyTo(self, op=1)
     except ConflictError:
         raise
     except:
-        raise CopyError, MessageDialog(
+        raise CopyError(MessageDialog(
             title="Move Error",
             message=sys.exc_info()[1],
-            action='manage_main')
+            action='manage_main'))
 
     if not sanity_check(self, ob):
-        raise CopyError, "This object cannot be pasted into itself"
+        raise CopyError("This object cannot be pasted into itself")
 
     orig_container = aq_parent(aq_inner(ob))
     if aq_base(orig_container) is aq_base(self):
@@ -85,12 +85,14 @@ def unrestricted_move(self, ob):
 def getSavedAttrName(attrName):
     return '_old_%s' % attrName
 
+
 def patch(context, originalAttrName, replacement):
     """ Default handler that preserves original method """
     OLD_NAME = getSavedAttrName(originalAttrName)
     if not hasattr(context, OLD_NAME):
         setattr(context, OLD_NAME, getattr(context, originalAttrName))
     setattr(context, originalAttrName, replacement)
+
 
 def undoPatch(context, originalAttrName):
     OLD_NAME = getSavedAttrName(originalAttrName)
