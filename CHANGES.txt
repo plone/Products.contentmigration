@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.0.2 - unreleased
+2.0.2 (2011-08-10)
 ------------------
 
 - Fix migration for folder containing an object (which is often the case) by patching the 'notifyWorkflowCreated' method on WorkflowAware class
