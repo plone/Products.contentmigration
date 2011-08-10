@@ -4,6 +4,8 @@ Changelog
 2.0.2 - unreleased
 ------------------
 
+- Add local buildout config
+
 - Use module name, not the full file path, to register with the logging module.
   [mj]
 

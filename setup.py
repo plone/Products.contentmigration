@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '2.0.2'
+version = '2.0.2dev'
 
 setup(name='Products.contentmigration',
       version=version,
@@ -20,6 +20,9 @@ setup(name='Products.contentmigration',
       namespace_packages=['Products'],
       include_package_data=True,
       zip_safe=False,
+      extras_require=dict(
+            test=['zope.testing', 'Zope2', 'Products.CMFPlone',
+                  'Products.PloneTestCase']),
       install_requires=[
           'setuptools',
       ],
