@@ -4,7 +4,14 @@ Changelog
 2.0.2 - unreleased
 ------------------
 
+- Fix migration for folder containing an object (which is often the case) by patching the 'notifyWorkflowCreated' method on WorkflowAware class
+  [jfroche]
+
+- Fix for folderish items, also use ATItemMigratorMixin
+  [jfroche]
+
 - Add local buildout config
+  [jfroche]
 
 - Use module name, not the full file path, to register with the logging module.
   [mj]
