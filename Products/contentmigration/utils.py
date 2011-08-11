@@ -97,3 +97,4 @@ def patch(context, originalAttrName, replacement):
 def undoPatch(context, originalAttrName):
     OLD_NAME = getSavedAttrName(originalAttrName)
     setattr(context, originalAttrName, getattr(context, OLD_NAME))
+    delattr(context, OLD_NAME)

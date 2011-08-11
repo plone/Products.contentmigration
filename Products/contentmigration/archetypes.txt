@@ -83,3 +83,8 @@ Add an simple object inside the folder:
     >>> from transaction import commit
     >>> commit()
 
+Check that patch has been removed:
+
+    >>> from Products.CMFCore.CMFCatalogAware import WorkflowAware
+    >>> '_old_notifyWorkflowCreated' in WorkflowAware.__dict__.keys()
+    False

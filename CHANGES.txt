@@ -4,7 +4,8 @@ Changelog
 2.0.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Undo patch correctly
+  [jfroche]
 
 
 2.0.2 (2011-08-10)
