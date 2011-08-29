@@ -1,7 +1,12 @@
+import logging
+
 from Products.ZCatalog.Catalog import mergeResults
 
 from Products.contentmigration.common import HAS_LINGUA_PLONE
 from Products.contentmigration.basemigrator.walker import CatalogWalker, registerWalker
+
+LOG = logging.getLogger('contentmigration')
+
 
 class CustomQueryWalker(CatalogWalker):
     """Walker using portal_catalog and an optional custom query. The ATCT
@@ -47,23 +52,34 @@ class CustomQueryWalker(CatalogWalker):
         query['meta_type'] = self.src_meta_type
 
         if HAS_LINGUA_PLONE and 'Language' in catalog.indexes():
-            #query['Language'] = catalog.uniqueValuesFor('Language')
             query['Language'] = 'all'
-            
-        for brain in catalog(query):
-            obj = brain.getObject()
-            
+
+        brains = catalog(query)
+        limit = getattr(self, 'limit', False)
+        if limit:
+            brains = brains[:limit]
+
+        for brain in brains:
+            try:
+                obj = brain.getObject()
+            except AttributeError:
+                LOG.error("Couldn't access %s" % brain.getPath())
+                continue
+
             if self.callBefore is not None and callable(self.callBefore):
                 if self.callBefore(obj, **self.kwargs) == False:
                     continue
-            
-            try: state = obj._p_changed
-            except: state = 0
+
+            try:
+                state = obj._p_changed
+            except:
+                state = 0
             if obj is not None:
                 yield obj
                 # safe my butt
-                if state is None: obj._p_deactivate()
-                    
+                if state is None:
+                    obj._p_deactivate()
+
 registerWalker(CustomQueryWalker)
 
 class MultiCustomQueryWalker(CustomQueryWalker):

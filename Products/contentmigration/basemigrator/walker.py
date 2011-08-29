@@ -76,6 +76,8 @@ class Walker:
       Commit a full transaction after transaction size
     * use_savepoint
       Create savepoints and roll back to the savepoint if an error occurs
+    * limit
+      Limits the catalog query to at most x items
 
     full_transaction and use_savepoint are mutual exclusive.
     o When the default values (both False) are used a subtransaction is committed.
@@ -109,6 +111,7 @@ class Walker:
         self.transaction_size = int(kwargs.get('transaction_size', 20))
         self.full_transaction = kwargs.get('full_transaction', False)
         self.use_savepoint = kwargs.get('use_savepoint', False)
+        self.limit = kwargs.get('limit', False)
 
         if self.full_transaction and self.use_savepoint:
             raise ValueError
@@ -258,18 +261,29 @@ class CatalogWalker(Walker):
             'meta_type' : self.src_meta_type,
             'path' : "/".join(self.portal.getPhysicalPath()),
         }
-
         if HAS_LINGUA_PLONE and 'Language' in catalog.indexes():
             query['Language'] = 'all'
 
-        for brain in catalog(query):
-            obj = brain.getObject()
-            try: state = obj._p_changed
-            except: state = 0
+        brains = catalog(query)
+        limit = getattr(self, 'limit', False)
+        if limit:
+            brains = brains[:limit]
+
+        for brain in brains:
+            try:
+                obj = brain.getObject()
+            except AttributeError:
+                LOG.error("Couldn't access %s" % brain.getPath())
+                continue
+            try:
+                state = obj._p_changed
+            except:
+                state = 0
             if obj is not None:
                 yield obj
                 # safe my butt
-                if state is None: obj._p_deactivate()
+                if state is None:
+                    obj._p_deactivate()
 
 registerWalker(CatalogWalker)
 

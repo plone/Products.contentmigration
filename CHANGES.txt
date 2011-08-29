@@ -1,11 +1,16 @@
 Changelog
 =========
 
-2.0.4 (unreleased)
+2.1.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add support for a `limit` option for the catalog based walkers, so it only
+  tries to load up to `limit` items at a time, defaulting to no limit.
+  [hannosch]
 
+- Catch attribute errors during `brain.getObject` and log them instead of
+  breaking the upgrade.
+  [hannosch]
 
 2.0.3 (2011-08-11)
 ------------------
