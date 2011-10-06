@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.1.0 (unreleased)
+2.1.0 (2011-10-06)
 ------------------
 
 - Add support for a `limit` option for the catalog based walkers, so it only
@@ -17,7 +17,6 @@ Changelog
 
 - Undo patch correctly
   [jfroche]
-
 
 2.0.2 (2011-08-10)
 ------------------
