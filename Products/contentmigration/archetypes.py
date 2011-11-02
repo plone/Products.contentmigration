@@ -83,7 +83,7 @@ class ATMigratorMixin:
         is_cp = getattr(self.old, '_v_is_cp', _marker)
         self.new._v_is_cp = 0
         Referenceable.manage_afterAdd(self.new, self.new,
-                                      self.new.getParentNode())
+                                      self.new.__parent__)
         if is_cp is not _marker:
             self.new._v_is_cp = is_cp
         else:

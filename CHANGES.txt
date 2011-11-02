@@ -4,6 +4,9 @@ Changelog
 2.1.1 (unreleased)
 ------------------
 
+- Use obj.__parent__ instead of obj getParentNode() for Zope trunk
+  compatibility.
+  [elro]
 
 2.1.0 (2011-10-06)
 ------------------
