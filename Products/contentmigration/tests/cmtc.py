@@ -27,7 +27,7 @@ def conditionallyAbortAttribute(obj, attributeName, attributeValue, **kwargs):
         return False
     else:
         return True
-    
+
 def callAfterObject(obj, **kwargs):
     kwargs['lst'].append(obj.getId())
 
@@ -50,12 +50,12 @@ class ContentMigratorTestCase(Sandboxed, PloneTestCase.PloneTestCase):
     def _setup(self):
         PloneTestCase.PloneTestCase._setup(self)
         self.app.REQUEST['SESSION'] = self.Session()
-        
+
     def execute(self, query, actions, callBefore=None, **kwargs):
         TestMigrator.fieldActions = actions
-        walker = CustomQueryWalker(self.portal, TestMigrator, 
+        walker = CustomQueryWalker(self.portal, TestMigrator,
                                     query = query,
-                                    callBefore = callBefore, 
+                                    callBefore = callBefore,
                                     **kwargs)
         # Need this to avoid copy errors....
         transaction.savepoint(optimistic=True)

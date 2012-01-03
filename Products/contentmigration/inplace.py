@@ -40,7 +40,7 @@ class BaseInplaceMigrator(BaseMigrator):
         if hasattr(self, attr):
             raise ValueError, ('The migrator already has a value '
                                'for %s.' % attr)
-    
+
     def beforeChange_properties(self):
         """Load up the migrator with property values."""
 
@@ -53,7 +53,7 @@ class BaseInplaceMigrator(BaseMigrator):
                 # migrated by dc or other
                 continue
             self._checkLoadAttr(id)
-            
+
             value = self.old.getProperty(id)
             typ = self.old.getPropertyType(id)
 
@@ -77,7 +77,7 @@ class BaseInplaceMigrator(BaseMigrator):
             __traceback_info__ = (self.new, id, value, typ)
             if self.new.hasProperty(id):
                 self.new._delProperty(id)
-            
+
             # continue if the object already has this attribute
             if getattr(aq_base(self.new), id, _marker) is not _marker:
                 continue
@@ -148,9 +148,9 @@ class BaseInplaceMigrator(BaseMigrator):
 
     def migrate_permission_settings(self):
         """Migrate permission settings (permission <-> role)
-        
+
         The acquire flag is coded into the type of the sequence. If roles is a list
-        than the roles are also acquire. If roles is a tuple the roles aren't 
+        than the roles are also acquire. If roles is a tuple the roles aren't
         acquired.
         """
         _marker = []
@@ -268,12 +268,12 @@ class BaseInplaceCMFMigrator(BaseInplaceMigrator, BaseCMFMigrator):
             self.new.talkback = self.talkback
 
 class InplaceItemMigrationMixin(ItemMigrationMixin):
-    """Migrates a non folderish object.""" 
+    """Migrates a non folderish object."""
 
     def renameOld(self):
         """Remove the old object rather than rename it."""
         self.parent.manage_delObjects([self.orig_id])
-    
+
     def remove(self):
         """Since we remove where other migrators rename, we pass
         here."""
@@ -286,7 +286,7 @@ class InplaceFolderMigrationMixin(InplaceItemMigrationMixin,
 
 class InplaceUIDMigrator:
     """Inplace Migrator class for migration CMF and AT uids. """
-    
+
     def beforeChange_cmf_uid(self):
         """Load CMF uids."""
         self._checkLoadAttr('uid')
@@ -294,7 +294,7 @@ class InplaceUIDMigrator:
                                    None)
         if uidhandler is not None:
             self.uid = uidhandler.queryUid(self.old, default=None)
-    
+
     def migrate_cmf_uid(self):
         """Migrate CMF uids."""
         uidhandler = getToolByName(self.parent, 'portal_uidhandler', None)
@@ -303,7 +303,7 @@ class InplaceUIDMigrator:
         uid = self.uid
         if uid is not None:
             uidhandler.setUid(self.new, uid, check_uniqueness=False)
-            
+
     def beforeChange_at_uuid(self):
         """Load AT universal uid."""
         self._checkLoadAttr('UID')
@@ -312,7 +312,7 @@ class InplaceUIDMigrator:
             self.old._uncatalogUID(self.parent)
         else:
             self.UID = None
-            
+
     def migrate_at_uuid(self):
         """Migrate AT universal uid
         """

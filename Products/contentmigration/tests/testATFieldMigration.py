@@ -19,35 +19,35 @@ class TestFieldMigration(ContentMigratorTestCase):
         self.folder.invokeFactory('Document', 'd2')
         self.folder.invokeFactory('News Item', 'n1')
         self.folder.invokeFactory('News Item', 'n2')
-    
+
         self.folder['d1'].setTitle('Document 1')
         self.folder['d1'].setDescription('Description 1')
         self.folder['d1'].setText('Body one')
-        
+
         self.folder['d2'].setTitle('Document 2')
         self.folder['d2'].setDescription('Description 2')
         self.folder['d2'].setText('Body two')
-        
+
         self.folder['n1'].setTitle('News 1')
         self.folder['n1'].setDescription('Description 3')
         self.folder['n1'].setText('News one')
-        
+
         self.folder['n2'].setTitle('News 2')
         self.folder['n2'].setDescription('Description 4')
         self.folder['n2'].setText('News two')
-        
+
         self.portal._delObject('front-page')
-        
+
         self.setRoles(['Manager', 'Member'])
-    
+
     def testAttributeRenaming(self):
         storage = AnnotationStorage()
-        query   = {} 
+        query   = {}
         actions = ({'fieldName'    : 'text',
                     'newFieldName' : 'bodyText',
                     'storage'      : storage
                     },)
-    
+
         self.execute(query, actions)
         self.assertEqual(storage.get('bodyText', self.folder['d1']).getRaw(), 'Body one')
         self.assertEqual(storage.get('bodyText', self.folder['d2']).getRaw(), 'Body two')
@@ -75,7 +75,7 @@ class TestFieldMigration(ContentMigratorTestCase):
         self.execute(query, actions)
         self.assertEqual(storage.get('bodyText', self.folder['d1']).getRaw(), 'BODY ONE')
         self.assertEqual(storage.get('bodyText', self.folder['d2']).getRaw(), 'BODY TWO')
-    
+
     def testNewStorageAndAttribute(self):
         storage = AnnotationStorage()
         newStorage = AttributeStorage()
@@ -101,7 +101,7 @@ class TestFieldMigration(ContentMigratorTestCase):
         self.execute(query, actions)
         self.assertEqual(getattr(self.folder['d1'], 'text').getRaw(), 'Body one')
         self.assertEqual(getattr(self.folder['d2'], 'text').getRaw(), 'Body two')
-        
+
         try:
             storage.get('text', self.folder['d1'])
         except AttributeError:
@@ -117,10 +117,10 @@ class TestFieldMigration(ContentMigratorTestCase):
                     'storage'      : storage,
                     'callBefore'   : conditionallyAbortAttribute,
                    },)
-        self.execute(query, actions)               
+        self.execute(query, actions)
         self.assertEqual(storage.get('text', self.folder['d1']).getRaw(), 'Body one')
         self.assertEqual(storage.get('text', self.folder['d2']).getRaw(), 'BODY TWO')
-    
+
     def testAbortObject(self):
         storage = AnnotationStorage()
         query   = {}
@@ -132,11 +132,11 @@ class TestFieldMigration(ContentMigratorTestCase):
         self.assertEqual(storage.get('text', self.folder['d1']).getRaw(), 'Body one')
         self.assertEqual(storage.get('text', self.folder['d2']).getRaw(), 'BODY TWO')
 
-   
+
     def testCallAfterAttribute(self):
         storage = AnnotationStorage()
         lst = []
-        query = {} 
+        query = {}
         actions = ({'fieldName'    : 'text',
                     'transform'    : makeUpper,
                     'storage'      : storage,

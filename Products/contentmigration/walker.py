@@ -13,22 +13,22 @@ class CustomQueryWalker(CatalogWalker):
     migration framework uses this to find content to migrate.
     """
     additionalQuery = {}
-    
+
     def __init__(self, portal, migrator, src_portal_type=None, dst_portal_type=None,
                     query={}, callBefore=None, **kwargs):
         """Set up the walker. See contentmigration.basemigrator.walker for details.
-        
+
         The 'query' parameter can be used to pass a dict with custom catalog
         query parameters. Note that portal_type and meta_type will be set
         based on src_portal_type or, if given, the src_portal_type in the
-        migrator. 
-        
+        migrator.
+
         The 'callBefore' parameter can be used to pass a function that will
         be called before each item is migrated. If it returns False, the item
         will be skipped. It should have the signature:
-        
+
             callBefore(oldObject, **kwargs)
-            
+
         The kwargs passed to this constructor will be passed along to the
         test function.
         """
@@ -109,19 +109,19 @@ class MultiCustomQueryWalker(CustomQueryWalker):
             results.append(catalog(addQ))
         brains = mergeResults(results, has_sort_keys=False,
                               reverse=False)
-            
+
         for brain in brains:
             obj = brain.getObject()
-            
+
             if self.callBefore is not None and callable(self.callBefore):
                 if self.callBefore(obj, **self.kwargs) == False:
                     continue
-            
+
             try: state = obj._p_changed
             except: state = 0
             if obj is not None:
                 yield obj
                 # safe my butt
                 if state is None: obj._p_deactivate()
-                    
+
 registerWalker(MultiCustomQueryWalker)

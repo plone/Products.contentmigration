@@ -27,7 +27,7 @@ class TranslocatingMigratorMixin:
 
         # Support AT migration if used
         schema = getattr(self, 'schema', {})
-        
+
         _createObjectByType(self.dst_portal_type, dst_parent,
                             self.new_id, **schema)
         self.new = getattr(aq_inner(dst_parent).aq_explicit, self.new_id)

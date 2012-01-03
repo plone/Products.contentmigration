@@ -47,15 +47,15 @@ LOG = logging.getLogger('ATCT.migration')
 # to avoid dependencies on CMFPlone
 def _createObjectByType(type_name, container, id, *args, **kw):
     """Create an object without performing security checks
-    
+
     invokeFactory and fti.constructInstance perform some security checks
     before creating the object. Use this function instead if you need to
     skip these checks.
-    
+
     This method uses some code from
     CMFCore.TypesTool.FactoryTypeInformation.constructInstance
     to create the object without security checks.
-    
+
     It doesn't finish the construction and so doesn't reinitializes the workflow.
     """
     id = str(id)
@@ -69,7 +69,7 @@ def _createObjectByType(type_name, container, id, *args, **kw):
     # in CMF <2.2 the portal type hasn't been set yet
     if 'portal_type' not in ob.__dict__ and hasattr(ob, '_setPortalTypeName'):
         ob._setPortalTypeName(fti.getId())
-    
+
     return ob
 
 from Acquisition import aq_base
@@ -81,9 +81,9 @@ from cgi import escape
 
 def unrestricted_rename(self, id, new_id):
     """Rename a particular sub-object
-    
+
     Copied from OFS.CopySupport
-    
+
     Less strict version of manage_renameObject:
         * no write look check
         * no verify object check from PortalFolder so it's allowed to rename
@@ -123,21 +123,21 @@ def unrestricted_rename(self, id, new_id):
 class Registry(dict):
     """Common registry
     """
-    
+
     def register(self, cls):
         self[cls.__name__] = cls
 
 class MigratorRegistry(Registry):
     """Migrator Registry
     """
-    
+
     def registerATCT(self, cls, for_cls):
         """Special register method for ATCT based migrators
         """
         cls.src_portal_type = for_cls._atct_newTypeFor['portal_type']
         cls.src_meta_type = for_cls._atct_newTypeFor['meta_type']
         cls.dst_portal_type = for_cls.portal_type
-        cls.dst_meta_type = for_cls.meta_type        
+        cls.dst_meta_type = for_cls.meta_type
         self.register(cls)
 
     def register(self, cls):
@@ -164,12 +164,12 @@ listWalkers = _walkerRegistry.items
 def migratePortalType(portal, src_portal_type, dst_portal_type, out=None,
                       migrator=None, use_catalog_patch=False, **kwargs):
     """Migrate from src portal type to dst portal type
-    
+
     Additional **kwargs are applied to the walker
     """
     if not out:
         out = StringIO()
-        
+
     # migrators are also registered by (src meta type, dst meta type)
     # let's find the right migrator for us
     ttool = getToolByName(portal, 'portal_types')
@@ -178,21 +178,21 @@ def migratePortalType(portal, src_portal_type, dst_portal_type, out=None,
     if src is None or dst is None:
         raise ValueError, "Unknown src or dst portal type: %s -> %s" % (
                            src_portal_type, dst_portal_type,)
-    
+
     key = (src.Metatype(), dst.Metatype())
     migratorFromRegistry = getMigrator(key)
     if migratorFromRegistry is None:
         raise ValueError, "No registered migrator for '%s' found" % str(key)
-    
+
     if migrator is not None:
         # got a migrator, make sure it is the right one
         if migrator is not migratorFromRegistry:
             raise ValueError, "ups"
     else:
-        migrator = migratorFromRegistry 
+        migrator = migratorFromRegistry
 
     Walker = migrator.walkerClass
-    
+
     msg = '--> Migrating %s to %s with %s' % (src_portal_type,
            dst_portal_type, Walker.__name__)
     if use_catalog_patch:
@@ -201,10 +201,10 @@ def migratePortalType(portal, src_portal_type, dst_portal_type, out=None,
         msg+=', using savepoints'
     if kwargs.get('full_transaction', False):
         msg+=', using full transactions'
-    
+
     print >> out, msg
     LOG.debug(msg)
-    
+
     walk = Walker(portal, migrator, src_portal_type=src_portal_type,
                   dst_portal_type=dst_portal_type, **kwargs)
     # wrap catalog patch inside a try/finally clause to make sure that the catalog
@@ -216,10 +216,10 @@ def migratePortalType(portal, src_portal_type, dst_portal_type, out=None,
     finally:
         if use_catalog_patch:
             removeCatalogPatch(catalog_class)
-    
-    print >>out, walk.getOutput()       
+
+    print >>out, walk.getOutput()
     LOG.debug('<-- Migrating %s to %s done' % (src_portal_type, dst_portal_type))
-    
+
     return out
 
 

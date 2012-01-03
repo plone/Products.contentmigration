@@ -27,7 +27,7 @@ __docformat__ = 'restructuredtext'
 # speed up the migration. Especially for folder migration with hundreds or more
 # children the speed gain can be immense.
 #
-# The patch is altering uncatalog_object to do nothing so that objects aren't 
+# The patch is altering uncatalog_object to do nothing so that objects aren't
 # uncataloged. catalog_object is altered to update only a small subset of the
 # indexes and no metadata. Only indexes that are used in the migration are updated.
 #
@@ -71,29 +71,29 @@ def applyCatalogPatch(portal):
         raise RuntimeError, "%s already has _atct_catalog_object" % catalog
     if hasattr(klass, '_atct_uncatalog_object'):
         raise RuntimeError, "%s already has _atct_uncatalog_object" % catalog
-    
+
     klass._atct_catalog_object = klass.catalog_object.im_func
     klass.catalog_object = instancemethod(catalog_object, None, klass)
-    
+
     klass._atct_uncatalog_object = klass.uncatalog_object.im_func
     klass.uncatalog_object = instancemethod(uncatalog_object, None, klass)
-    
+
     return klass
-    
+
 def removeCatalogPatch(klass):
     """Unpatch catalog
-    
+
     removeCatalogPatch must be called with the catalog class and not with the portal
     as argument. If migration fails the transaction is aborted explictly. The portal
     doesn't exist any longer and the method would be unable to acquire the
     portal_catalog.
     """
     LOG.info('Unpatching catalog_object and uncatalog_object')
-    
+
     if hasattr(klass, '_atct_catalog_object'):
         klass.catalog_object = klass._atct_catalog_object.im_func
         del klass._atct_catalog_object
-    
+
     if hasattr(klass, '_atct_uncatalog_object'):
         klass.uncatalog_object = klass._atct_uncatalog_object.im_func
         del klass._atct_uncatalog_object
