@@ -8,16 +8,20 @@ another making use of the schemata for field migration::
 
     >>> from Products.CMFCore.permissions import ModifyPortalContent
     >>> from Products.PloneTestCase.setup import _createObjectByType
+    >>> from zope.interface import alsoProvides
+    >>> from Products.contentmigration.tests.utils import MarkerInterface
     >>> self.portal.manage_permission(
     ...     ModifyPortalContent, ['Manager', 'Owner'], acquire=0)
 
     >>> foo_doc = _createObjectByType(
     ...     'Document', self.portal, id='foo', title='Foo')
+    >>> alsoProvides(foo_doc, MarkerInterface)
     >>> foo_doc.portal_type, foo_doc.getId(), foo_doc.Title()
     ('Document', 'foo', 'Foo')
 
     >>> bar_doc = _createObjectByType(
     ...     'Document', self.portal, id='bar', title='Bar')
+    >>> alsoProvides(foo_doc, MarkerInterface)
     >>> bar_doc.portal_type, bar_doc.getId(), bar_doc.Title()
     ('Document', 'bar', 'Bar')
 
@@ -32,6 +36,8 @@ another making use of the schemata for field migration::
     >>> foo_news = self.portal.foo
     >>> foo_news.portal_type, foo_news.getId(), foo_news.Title()
     ('News Item', 'foo', 'Foo')
+    >>> MarkerInterface.providedBy(foo_news)
+    True
 
     >>> from Products.contentmigration.archetypes import InplaceATItemMigrator
     >>> bar_migrator = InplaceATItemMigrator(bar_doc)
@@ -41,6 +47,8 @@ another making use of the schemata for field migration::
     >>> bar_news = self.portal.bar
     >>> bar_news.portal_type, bar_news.getId(), bar_news.Title()
     ('News Item', 'bar', 'Bar')
+    >>> MarkerInterface.providedBy(foo_news)
+    True
 
 
 Folderish Contents:

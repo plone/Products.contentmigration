@@ -4,6 +4,10 @@ Changelog
 2.1.1 (unreleased)
 ------------------
 
+- Migrate marker interfaces.
+  Fixes http://dev.plone.org/ticket/11424
+  [maurits]
+
 - Migrate extension fields too (archetypes.schemaextender).
   [maurits]
 

@@ -1,4 +1,5 @@
 from Acquisition import aq_inner
+from zope.interface import alsoProvides, directlyProvidedBy
 
 from Products.CMFCore.utils import getToolByName
 
@@ -200,6 +201,11 @@ class ATItemMigratorMixin:
                 kwargs[new_field_name] = value
         # Apply the changes.
         self.new.update(**kwargs)
+
+    def migrate_marker_interfaces(self):
+        """Migrate marker interfaces.
+        """
+        alsoProvides(self.new, directlyProvidedBy(self.old))
 
 
 class ATItemMigrator(ATItemMigratorMixin, ItemMigrationMixin,
