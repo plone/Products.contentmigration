@@ -22,7 +22,7 @@ setup(name='Products.contentmigration',
       zip_safe=False,
       extras_require=dict(
             test=['zope.testing', 'Zope2', 'Products.CMFPlone',
-                  'Products.PloneTestCase']),
+                  'Products.PloneTestCase', 'archetypes.schemaextender']),
       install_requires=[
           'setuptools',
       ],

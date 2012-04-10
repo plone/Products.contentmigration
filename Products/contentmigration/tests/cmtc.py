@@ -2,6 +2,7 @@ from Testing.ZopeTestCase import Sandboxed
 from Products.contentmigration.migrator import InlineFieldActionMigrator
 from Products.contentmigration.walker import CustomQueryWalker
 from Products.contentmigration.tests.layer import TestLayer
+from Products.contentmigration.tests.layer import SchemaExtenderTestLayer
 
 import transaction
 
@@ -60,3 +61,8 @@ class ContentMigratorTestCase(Sandboxed, PloneTestCase.PloneTestCase):
         # Need this to avoid copy errors....
         transaction.savepoint(optimistic=True)
         walker.go(**kwargs)
+
+
+class SchemaExtenderMigratorTestCase(ContentMigratorTestCase):
+
+    layer = SchemaExtenderTestLayer
