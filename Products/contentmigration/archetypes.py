@@ -99,10 +99,11 @@ class ATItemMigratorMixin:
     """Migrator for items implementing the AT API."""
 
     def beforeChange_schema(self):
-        """Load the values of fields from according to fields_map if present.
+        """Load the values of fields according to fields_map if present.
+
         Each key in fields_map is a field in the old schema and each
         value is a field in the new schema.  If fields_map isn't a
-        mapping, each filed in the old schema will be migrated into
+        mapping, each field in the old schema will be migrated into
         the new schema.  Obeys field modes for readable and writable
         fields.  These values are then passed in as field kwargs into
         the constructor in the createNew method."""
@@ -153,6 +154,52 @@ class ATItemMigratorMixin:
                             self.new_id, **self.schema)
         self.new = getattr(aq_inner(self.parent).aq_explicit,
                            self.new_id)
+
+    def migrate_extension_fields(self):
+        """Migrate extension fields.
+
+        In the beforeChange_schema method only standard fields of the
+        schema are taken care of.  Extension fields from
+        archetypes.schemaextender are not handled.  This can only
+        really be done after the new object has been created.
+        """
+
+        old_schema = self.old.Schema()
+        typesTool = getToolByName(self.parent, 'portal_types')
+        fti = typesTool.getTypeInfo(self.dst_portal_type)
+        archetype = getType(self.dst_meta_type, fti.product)
+        plain_new_schema = archetype['klass'].schema
+        new_schema = self.new.Schema()
+
+        if self.only_fields_map:
+            old_field_names = self.fields_map.keys()
+        else:
+            old_field_names = old_schema.keys()
+
+        kwargs = {}
+        for old_field_name in old_field_names:
+            old_field = self.old.getField(old_field_name)
+            new_field_name = self.fields_map.get(old_field_name,
+                                                 old_field_name)
+
+            if new_field_name is None:
+                continue
+            if new_field_name in plain_new_schema.keys():
+                # Already migrated.
+                continue
+
+            new_field = new_schema.get(new_field_name, None)
+            if new_field is None:
+                continue
+
+            if ('r' in old_field.mode and 'w' in new_field.mode):
+                accessor = (
+                    getattr(old_field, self.accessor_getter)(self.old)
+                    or old_field.getAccessor(self.old))
+                value = accessor()
+                kwargs[new_field_name] = value
+        # Apply the changes.
+        self.new.update(**kwargs)
 
 
 class ATItemMigrator(ATItemMigratorMixin, ItemMigrationMixin,

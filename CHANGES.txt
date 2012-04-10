@@ -4,6 +4,9 @@ Changelog
 2.1.1 (unreleased)
 ------------------
 
+- Migrate extension fields too (archetypes.schemaextender).
+  [maurits]
+
 - Use obj.__parent__ instead of obj getParentNode() for Zope trunk
   compatibility.
   [elro]
