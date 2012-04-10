@@ -1,7 +1,3 @@
-import os, sys
-if __name__ == '__main__':
-    execfile(os.path.join(sys.path[0], 'framework.py'))
-
 from Products.contentmigration.tests.cmtc import ContentMigratorTestCase
 from Products.contentmigration.tests.cmtc import makeUpper
 from Products.contentmigration.tests.cmtc import conditionallyAbortAttribute
@@ -9,6 +5,7 @@ from Products.contentmigration.tests.cmtc import conditionallyAbortObject
 from Products.contentmigration.tests.cmtc import callAfterAttribute
 from Products.Archetypes.Storage.annotation import AnnotationStorage
 from Products.Archetypes.Storage import AttributeStorage
+
 
 class TestFieldMigration(ContentMigratorTestCase):
     """Test migration of in-instance AT fields"""
@@ -162,6 +159,3 @@ def test_suite():
     suite = TestSuite()
     suite.addTest(makeSuite(TestFieldMigration))
     return suite
-
-if __name__ == '__main__':
-    framework()
