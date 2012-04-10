@@ -4,6 +4,7 @@ from Products.PloneTestCase.layer import PloneSite
 try:
     from Zope2.App import zcml
     from OFS import metaconfigure
+    zcml, metaconfigure  # pyflakes
 except ImportError:
     from Products.Five import zcml
     from Products.Five import fiveconfigure as metaconfigure

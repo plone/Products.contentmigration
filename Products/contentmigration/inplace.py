@@ -180,7 +180,7 @@ class BaseInplaceMigrator(BaseMigrator):
             else:
                 value = oldVal
 
-            setattr(self, newKey, oldVal)
+            setattr(self, newKey, value)
 
     def migrate_withmap(self):
         """Migrates other attributes from obj.__dict__ using a map

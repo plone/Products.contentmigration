@@ -77,19 +77,13 @@ def migrateField(obj, action, newObj=None, **kwargs):
     callAfter = action.get('callAfter', None)
     unsetField = action.get('unset', False)
 
-    migrateObject = True
     if newObj is None or obj.getPhysicalPath() == newObj.getPhysicalPath():
-        migrateObject = False
         newObj = obj
 
-    migrateField = True
     if newFieldName is None:
-        migrateField = False
         newFieldName = fieldName
 
-    migrateStorage = True
     if newStorage is None:
-        migrateStorage = False
         newStorage = storage
 
     doTransform = True
