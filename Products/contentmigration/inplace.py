@@ -126,7 +126,7 @@ class BaseInplaceMigrator(BaseMigrator):
         """
         self.new.__ac_local_roles__ = None
         # clean the auto-generated creators by Archetypes
-        # ExtensibleMeatadata
+        # ExtensibleMetadata
         self.new.setCreators([])
         if not self.__ac_local_roles__:
             # Only set owner local role if the owner can be retrieved
