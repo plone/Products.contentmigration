@@ -275,8 +275,9 @@ class BaseMigrator:
         """Migrate local roles
         """
         self.new.__ac_local_roles__ = None
-        # clean the auto-generated creators by Archetypes ExtensibleMetadata
-        self.new.setCreators([])
+        # Clean the auto-generated creators by Archetypes
+        # ExtensibleMetadata.  Do set the original creators.
+        self.new.setCreators(self.old.listCreators())
         local_roles = self.old.__ac_local_roles__
         if not local_roles:
             # Only set owner local role if the owner can be retrieved

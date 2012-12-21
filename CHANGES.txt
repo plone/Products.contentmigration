@@ -4,7 +4,9 @@ Changelog
 2.1.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- When Joe is the Creator of an object and Jane is the Owner, make
+  sure Joe stays the Creator after migrating.
+  [maurits]
 
 
 2.1.1 (2012-04-15)
