@@ -42,6 +42,7 @@ from Products.contentmigration.common import _createObjectByType
 from Products.contentmigration.utils import patch, undoPatch
 from Products.Archetypes.interfaces import IReferenceable
 from plone.locking.interfaces import ILockable
+from plone.uuid.interfaces import IAttributeUUID, IMutableUUID
 
 LOG = logging.getLogger('ATCT.migration')
 
@@ -587,7 +588,10 @@ class UIDMigrator:
             return  # old object doesn't support AT uuids
         uid = self.old.UID()
         self.old._uncatalogUID(self.parent)
-        self.new._setUID(uid)
+        if IAttributeUUID.providedBy(self.new):
+            IMutableUUID(self.new).set(str(uid))
+        else:
+            self.new._setUID(uid)
 
 
 class CMFItemMigrator(ItemMigrationMixin, UIDMigrator, BaseCMFMigrator):
