@@ -4,8 +4,8 @@ Changelog
 2.1.3 (unreleased)
 ------------------
 
-- Modify UIDMigrator so that it also works for items which 
-  provides IAttributeUUID.
+- Modify UIDMigrator so that it also works for items which
+  provides IMutableUUID.
   [pabo]
 
 
