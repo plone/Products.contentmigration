@@ -29,6 +29,7 @@ from Acquisition import aq_parent
 from Acquisition import aq_inner
 from DateTime import DateTime
 from Persistence import PersistentMapping
+from zope.component import queryAdapter
 from OFS.Uninstalled import BrokenClass
 from OFS.interfaces import IOrderedContainer
 from ZODB.POSException import ConflictError
@@ -42,7 +43,7 @@ from Products.contentmigration.common import _createObjectByType
 from Products.contentmigration.utils import patch, undoPatch
 from Products.Archetypes.interfaces import IReferenceable
 from plone.locking.interfaces import ILockable
-from plone.uuid.interfaces import IAttributeUUID, IMutableUUID
+from plone.uuid.interfaces import IMutableUUID
 
 LOG = logging.getLogger('ATCT.migration')
 
@@ -588,7 +589,7 @@ class UIDMigrator:
             return  # old object doesn't support AT uuids
         uid = self.old.UID()
         self.old._uncatalogUID(self.parent)
-        if IAttributeUUID.providedBy(self.new):
+        if queryAdapter(self.new, IMutableUUID):
             IMutableUUID(self.new).set(str(uid))
         else:
             self.new._setUID(uid)
