@@ -562,7 +562,7 @@ class FolderMigrationMixin(ItemMigrationMixin):
         if self.orderAble and IOrderedContainer.providedBy(self.new):
             orderMap = self.orderMap
             for id, pos in orderMap.items():
-                self.new.moveObjectToPosition(id, pos)
+                self.new.moveObjectToPosition(id, pos or 0)
 
     def last_migrate_restoreNotifyWorkflowCreatedMethod(self):
         undoPatch(WorkflowAware, 'notifyWorkflowCreated')
