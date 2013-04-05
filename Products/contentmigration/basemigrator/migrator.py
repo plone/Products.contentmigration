@@ -505,7 +505,7 @@ class FolderMigrationMixin(ItemMigrationMixin):
 
             if orderAble:
                 try:
-                    orderMap[id] = self.old.getObjectPosition(id)
+                    orderMap[id] = self.old.getObjectPosition(id) or 0
                 except AttributeError:
                     LOG.debug("Broken OrderSupport", exc_info=True)
                     orderAble = 0
@@ -562,7 +562,7 @@ class FolderMigrationMixin(ItemMigrationMixin):
         if self.orderAble and IOrderedContainer.providedBy(self.new):
             orderMap = self.orderMap
             for id, pos in orderMap.items():
-                self.new.moveObjectToPosition(id, pos or 0)
+                self.new.moveObjectToPosition(id, pos)
 
     def last_migrate_restoreNotifyWorkflowCreatedMethod(self):
         undoPatch(WorkflowAware, 'notifyWorkflowCreated')
