@@ -4,7 +4,8 @@ Changelog
 2.1.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Default to position 0 if folder position is not assigned.
+  [kroman0, pbauer]
 
 
 2.1.3 (2013-03-05)
