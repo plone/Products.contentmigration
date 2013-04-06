@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.1.4 (unreleased)
+2.1.4 (2013-04-06)
 ------------------
 
 - Default to position 0 if folder position is not assigned.
