@@ -10,6 +10,8 @@ another making use of the schemata for field migration::
     >>> from Products.PloneTestCase.setup import _createObjectByType
     >>> from zope.interface import alsoProvides
     >>> from Products.contentmigration.tests.utils import MarkerInterface
+    >>> from Products.contentmigration.tests.utils import add_redirects
+    >>> from Products.contentmigration.tests.utils import get_redirects
     >>> self.portal.manage_permission(
     ...     ModifyPortalContent, ['Manager', 'Owner'], acquire=0)
 
@@ -18,12 +20,14 @@ another making use of the schemata for field migration::
     >>> alsoProvides(foo_doc, MarkerInterface)
     >>> foo_doc.portal_type, foo_doc.getId(), foo_doc.Title()
     ('Document', 'foo', 'Foo')
+    >>> add_redirects(['/plone/lol'], foo_doc)
 
     >>> bar_doc = _createObjectByType(
     ...     'Document', self.portal, id='bar', title='Bar')
     >>> alsoProvides(foo_doc, MarkerInterface)
     >>> bar_doc.portal_type, bar_doc.getId(), bar_doc.Title()
     ('Document', 'bar', 'Bar')
+    >>> add_redirects(['/plone/allo', '/plone/kikoo'], bar_doc)
 
     >>> from transaction import commit
     >>> commit()
@@ -38,6 +42,8 @@ another making use of the schemata for field migration::
     ('News Item', 'foo', 'Foo')
     >>> MarkerInterface.providedBy(foo_news)
     True
+    >>> get_redirects(foo_news)
+    ['/plone/lol']
 
     >>> from Products.contentmigration.archetypes import InplaceATItemMigrator
     >>> bar_migrator = InplaceATItemMigrator(bar_doc)
@@ -49,7 +55,8 @@ another making use of the schemata for field migration::
     ('News Item', 'bar', 'Bar')
     >>> MarkerInterface.providedBy(foo_news)
     True
-
+    >>> get_redirects(bar_news)
+    ['/plone/allo', '/plone/kikoo']
 
 Folderish Contents:
 
@@ -59,6 +66,7 @@ Folderish Contents:
     ('Folder', 'fold1', 'Fold1')
     >>> foo_folder.portal_type
     'Folder'
+    >>> add_redirects(['/plone/bike', '/plone/head'], foo_folder)
 
 Add an simple object inside the folder:
 
@@ -77,6 +85,8 @@ Add an simple object inside the folder:
     >>> foo_folder = self.portal.fold1
     >>> foo_folder.Title()
     'Fold1'
+    >>> get_redirects(foo_folder)
+    ['/plone/bike', '/plone/head']
 
     >>> from Products.contentmigration.archetypes import InplaceATFolderMigrator
     >>> ff_migrator = InplaceATFolderMigrator(foo_folder)
@@ -87,6 +97,8 @@ Add an simple object inside the folder:
     >>> foo_folder = self.portal.fold1
     >>> foo_folder.Title()
     'Fold1'
+    >>> get_redirects(foo_folder)
+    ['/plone/bike', '/plone/head']
 
     >>> from transaction import commit
     >>> commit()

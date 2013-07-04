@@ -30,6 +30,7 @@ from Acquisition import aq_inner
 from DateTime import DateTime
 from Persistence import PersistentMapping
 from zope.component import queryAdapter
+from zope.component import queryUtility
 from OFS.Uninstalled import BrokenClass
 from OFS.interfaces import IOrderedContainer
 from ZODB.POSException import ConflictError
@@ -44,6 +45,11 @@ from Products.contentmigration.utils import patch, undoPatch
 from Products.Archetypes.interfaces import IReferenceable
 from plone.locking.interfaces import ILockable
 from plone.uuid.interfaces import IMutableUUID
+try:
+    from plone.app.redirector.interfaces import IRedirectionStorage
+    IRedirectionStorage  # pyflakes
+except ImportError:
+    IRedirectionStorage = None
 
 LOG = logging.getLogger('ATCT.migration')
 
@@ -430,6 +436,28 @@ class BaseCMFMigrator(BaseMigrator):
         """
         self.new.creation_date = DateTime(self.old_creation_date)
         self.new.setModificationDate(DateTime(self.old_mod_date))
+
+    def beforeChange_redirects(self):
+        """Load redirects."""
+        if IRedirectionStorage is None:
+            return
+        storage = queryUtility(IRedirectionStorage)
+        if storage is None:
+            return
+        path = '/'.join(self.old.getPhysicalPath())
+        self.old_redirects = storage.redirects(path)
+
+    def migrate_redirects(self):
+        """migrate redirects
+        """
+        if IRedirectionStorage is None:
+            return
+        storage = queryUtility(IRedirectionStorage)
+        if storage is None:
+            return
+        path = '/'.join(self.new.getPhysicalPath())
+        for redirect in self.old_redirects:
+            storage.add(redirect, path)
 
 
 class ItemMigrationMixin:
