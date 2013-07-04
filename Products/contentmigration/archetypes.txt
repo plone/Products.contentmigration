@@ -24,7 +24,7 @@ another making use of the schemata for field migration::
 
     >>> bar_doc = _createObjectByType(
     ...     'Document', self.portal, id='bar', title='Bar')
-    >>> alsoProvides(foo_doc, MarkerInterface)
+    >>> alsoProvides(bar_doc, MarkerInterface)
     >>> bar_doc.portal_type, bar_doc.getId(), bar_doc.Title()
     ('Document', 'bar', 'Bar')
     >>> add_redirects(['/plone/allo', '/plone/kikoo'], bar_doc)
@@ -53,7 +53,7 @@ another making use of the schemata for field migration::
     >>> bar_news = self.portal.bar
     >>> bar_news.portal_type, bar_news.getId(), bar_news.Title()
     ('News Item', 'bar', 'Bar')
-    >>> MarkerInterface.providedBy(foo_news)
+    >>> MarkerInterface.providedBy(bar_news)
     True
     >>> get_redirects(bar_news)
     ['/plone/allo', '/plone/kikoo']
