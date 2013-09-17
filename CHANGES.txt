@@ -4,7 +4,8 @@ Changelog
 2.1.6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Unlock items with webdav.
+  [maurits]
 
 
 2.1.5 (2013-07-15)

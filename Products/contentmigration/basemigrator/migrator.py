@@ -191,9 +191,13 @@ class BaseMigrator:
         """
         beforeChange, afterChange = self.getMigrationMethods()
 
+        # Unlock according to plone.locking:
         lockable = ILockable(self.old, None)
         if lockable and lockable.locked():
             lockable.unlock()
+        # Unlock according to webdav:
+        if self.old.wl_isLocked():
+            self.old.wl_clearLocks()
 
         for method in beforeChange:
             __traceback_info__ = (self, method, self.old, self.orig_id)
