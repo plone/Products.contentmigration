@@ -11,7 +11,7 @@ interactions with the application (such as CMFMember/membrane
 contentish members) that make renaming them or having the old and the
 new side-by-side a pain.
 
-Also, we test what happens when the Owner and Creator differ.
+Also, we test what happens when the Owner and Creator differ::
 
     >>> self.addProfile('Products.contentmigration:testing')
     >>> from Products.PloneTestCase.setup import _createObjectByType

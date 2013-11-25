@@ -3,7 +3,7 @@
 Archetype to Archetype Migration
 ================================
 
-These are migrators for migrating from one archetyeps object to
+These are migrators for migrating from one archetypes object to
 another making use of the schemata for field migration::
 
     >>> from Products.CMFCore.permissions import ModifyPortalContent
@@ -58,7 +58,7 @@ another making use of the schemata for field migration::
     >>> get_redirects(bar_news)
     ['/plone/allo', '/plone/kikoo']
 
-Folderish Contents:
+Folderish contents::
 
     >>> foo_folder = _createObjectByType(
     ...     'Folder', self.portal, id='fold1', title='Fold1')
@@ -68,7 +68,7 @@ Folderish Contents:
     'Folder'
     >>> add_redirects(['/plone/bike', '/plone/head'], foo_folder)
 
-Add an simple object inside the folder:
+Add a simple object inside the folder::
 
     >>> foo_folder.invokeFactory('Document', id='doc1', Title='Document 1')
     'doc1'
@@ -103,7 +103,7 @@ Add an simple object inside the folder:
     >>> from transaction import commit
     >>> commit()
 
-Check that patch has been removed:
+Check that the patch has been removed::
 
     >>> from Products.CMFCore.CMFCatalogAware import WorkflowAware
     >>> '_old_notifyWorkflowCreated' in WorkflowAware.__dict__.keys()
