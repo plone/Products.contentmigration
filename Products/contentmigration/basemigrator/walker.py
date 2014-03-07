@@ -58,7 +58,7 @@ class MigrationError(RuntimeError):
         return "MigrationError for obj at %s (%s -> %s):\n%s" % (self.path,
                     self.src_portal_type, self.dst_portal_type, self.tb)
 
-class Walker:
+class Walker(object):
     """Walks through the system and migrates every object it finds
 
     arguments:

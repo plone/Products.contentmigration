@@ -104,7 +104,7 @@ def getPermissionMapping(acperm):
     return result
 
 
-class BaseMigrator:
+class BaseMigrator(object):
     """Migrates an object to the new type
 
     The base class has the following attributes:
@@ -464,7 +464,7 @@ class BaseCMFMigrator(BaseMigrator):
             storage.add(redirect, path)
 
 
-class ItemMigrationMixin:
+class ItemMigrationMixin(object):
     """Migrates a non folderish object
     """
     isFolderish = False
@@ -600,7 +600,7 @@ class FolderMigrationMixin(ItemMigrationMixin):
         undoPatch(WorkflowAware, 'notifyWorkflowCreated')
 
 
-class UIDMigrator:
+class UIDMigrator(object):
     """Migrator class for migration CMF and AT uids
     """
 

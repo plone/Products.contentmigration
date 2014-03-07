@@ -11,7 +11,7 @@ from Products.contentmigration.inplace import (InplaceCMFItemMigrator,
                                                InplaceCMFFolderMigrator)
 logger = logging.getLogger(__name__)
 
-class TranslocatingMigratorMixin:
+class TranslocatingMigratorMixin(object):
     """A migrator that places the destination object in a different
     location from the source object."""
 

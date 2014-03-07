@@ -284,7 +284,7 @@ class InplaceFolderMigrationMixin(InplaceItemMigrationMixin,
     """Migrates a folderish object inplace."""
     isFolderish = True
 
-class InplaceUIDMigrator:
+class InplaceUIDMigrator(object):
     """Inplace Migrator class for migration CMF and AT uids. """
 
     def beforeChange_cmf_uid(self):

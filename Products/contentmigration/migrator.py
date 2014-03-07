@@ -1,7 +1,8 @@
 from Acquisition import aq_inner
 from field import migrateField
 
-class BaseInlineMigrator:
+
+class BaseInlineMigrator(object):
     """This migrator base class is similar to the ATContentTypes BaseMigrator,
     except it is designed to migrate fields within the same content type,
     not across types. To that end, it does not do a rename-copy-create cycle,

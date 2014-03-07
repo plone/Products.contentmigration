@@ -30,7 +30,7 @@ def migrate_dummy(self):
     pass
 
 
-class ATMigratorMixin:
+class ATMigratorMixin(object):
     """Migrates content of one AT type to another AT type."""
 
     fields_map = {}
@@ -96,7 +96,7 @@ class BaseATMigrator(ATMigratorMixin, BaseCMFMigrator):
     pass
 
 
-class ATItemMigratorMixin:
+class ATItemMigratorMixin(object):
     """Migrator for items implementing the AT API."""
 
     def beforeChange_schema(self):
