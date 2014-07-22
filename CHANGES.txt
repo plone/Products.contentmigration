@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.1.8 (unreleased)
+2.1.8 (2014-04-14)
 ------------------
 
 - Changed all old-style to new-style classes for easier method overloading from
