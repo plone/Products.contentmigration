@@ -50,6 +50,10 @@ try:
     IRedirectionStorage  # pyflakes
 except ImportError:
     IRedirectionStorage = None
+try:
+    from Products.Archetypes.config import UUID_ATTR
+except ImportError:
+    UUID_ATTR = None
 
 LOG = logging.getLogger('ATCT.migration')
 
@@ -621,6 +625,8 @@ class UIDMigrator(object):
             return  # old object doesn't support AT uuids
         uid = self.old.UID()
         self.old._uncatalogUID(self.parent)
+        if UUID_ATTR:  # Prevent object deletion triggering UID related magic
+            setattr(self.old, UUID_ATTR, None)
         if queryAdapter(self.new, IMutableUUID):
             IMutableUUID(self.new).set(str(uid))
         else:
