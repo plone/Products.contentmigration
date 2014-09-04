@@ -25,21 +25,29 @@ __docformat__ = 'restructuredtext'
 
 import sys
 import logging
+import pkg_resources
 from cStringIO import StringIO
 
 from Products.CMFCore.utils import getToolByName
 from Products.contentmigration.catalogpatch import applyCatalogPatch
 from Products.contentmigration.catalogpatch import removeCatalogPatch
 
-# LinguaPlone addon?
+
+# Is there a multilingual addon?
 try:
-    from Products.LinguaPlone.public import registerType
-    registerType    # for pyflakes
-except ImportError:
+    pkg_resources.get_distribution('Products.LinguaPlone')
+except pkg_resources.DistributionNotFound:
     HAS_LINGUA_PLONE = False
 else:
     HAS_LINGUA_PLONE = True
-    del registerType
+
+if not HAS_LINGUA_PLONE:
+    try:
+        pkg_resources.get_distribution('plone.app.multilingual')
+    except pkg_resources.DistributionNotFound:
+        HAS_LINGUA_PLONE = False
+    else:
+        HAS_LINGUA_PLONE = True
 
 LOG = logging.getLogger('ATCT.migration')
 
