@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.1.9 (unreleased)
+2.1.9 (2014-09-07)
 ------------------
 
 - Migrate translated items when plone.app.multilingual or LinguaPlone present.
