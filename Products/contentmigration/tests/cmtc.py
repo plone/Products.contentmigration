@@ -6,8 +6,7 @@ from Products.contentmigration.tests.layer import SchemaExtenderTestLayer
 
 import transaction
 
-from Products.PloneTestCase import PloneTestCase
-PloneTestCase.setupPloneSite()
+from plone.app.testing.bbb import PloneTestCase
 
 # Callback methods
 
@@ -40,7 +39,7 @@ class TestMigrator(InlineFieldActionMigrator):
     src_portal_type = 'Document'
     src_meta_type = 'ATDocument'
 
-class ContentMigratorTestCase(Sandboxed, PloneTestCase.PloneTestCase):
+class ContentMigratorTestCase(PloneTestCase):
 
     layer = TestLayer
 
