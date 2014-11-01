@@ -1,20 +1,28 @@
-from doctest import ELLIPSIS
+import unittest
+import doctest
 
-from Testing.ZopeTestCase import ZopeDocFileSuite
+from plone.testing import layered
 
-from Products.contentmigration.tests.cmtc import ContentMigratorTestCase
+optionflags = (doctest.NORMALIZE_WHITESPACE |
+               doctest.ELLIPSIS |
+               doctest.REPORT_ONLY_FIRST_FAILURE |
+               doctest.REPORT_NDIFF)
+
+from Products.contentmigration.tests.layer import TestLayer
+
 
 def test_suite():
-    suites = (
-        ZopeDocFileSuite(
-            '../inplace.txt',
-            '../translocate.txt',
-            '../archetypes.txt',
-            '../bugfixes.txt',
-            package='Products.contentmigration.tests',
-            optionflags=ELLIPSIS,
-            test_class=ContentMigratorTestCase),
-        )
-
-    from unittest import TestSuite
-    return TestSuite(suites)
+    suite = unittest.TestSuite()
+    test_files = [
+        '../inplace.txt',
+        '../translocate.txt',
+        '../archetypes.txt',
+        '../bugfixes.txt',
+        '../schemaextender.txt'
+    ]
+    for test_file in test_files:
+            suite.addTest(layered(
+            doctest.DocFileSuite(test_file, package='Products.contentmigration.tests',
+                                 optionflags=optionflags),
+            layer=TestLayer))
+    return suite

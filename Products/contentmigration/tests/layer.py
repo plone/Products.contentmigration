@@ -1,42 +1,18 @@
-from Products.PloneTestCase.layer import PloneSite
-
-# BBB Zope 2.12
-try:
-    from Zope2.App import zcml
-    from OFS import metaconfigure
-    zcml, metaconfigure  # pyflakes
-except ImportError:
-    from Products.Five import zcml
-    from Products.Five import fiveconfigure as metaconfigure
+from plone.app.testing import bbb
+from plone.app import testing
 
 
-class TestLayer(PloneSite):
-    """ layer for integration tests """
+class PloneTestCaseFixture(bbb.PloneTestCaseFixture):
 
-    @classmethod
-    def setUp(cls):
-        metaconfigure.debug_mode = True
+    defaultBases = (bbb.PTC_FIXTURE, )
+
+    def setUpZope(self, app, configurationContext):
         from Products import contentmigration
-        zcml.load_config('testing.zcml', package=contentmigration)
-        metaconfigure.debug_mode = False
+        self.loadZCML('testing.zcml', package=contentmigration)
+        self.loadZCML('testing-schemaextender.zcml', package=contentmigration)
 
-    @classmethod
-    def tearDown(cls):
-        pass
+PCM_FIXTURE = PloneTestCaseFixture()
+TestLayer = testing.FunctionalTesting(
+    bases=(PCM_FIXTURE, ), name='PloneContentMigrationTestCase:Functional')
 
-
-class SchemaExtenderTestLayer(PloneSite):
-    """ layer for integration tests with archetypes.schemaextender """
-
-    @classmethod
-    def setUp(cls):
-        metaconfigure.debug_mode = True
-        from Products import contentmigration
-        zcml.load_config('testing.zcml', package=contentmigration)
-        zcml.load_config('testing-schemaextender.zcml',
-                         package=contentmigration)
-        metaconfigure.debug_mode = False
-
-    @classmethod
-    def tearDown(cls):
-        pass
+SchemaExtenderTestLayer = TestLayer
