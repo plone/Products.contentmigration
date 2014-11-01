@@ -12,18 +12,19 @@ another making use of the schemata for field migration::
     >>> from Products.contentmigration.tests.utils import MarkerInterface
     >>> from Products.contentmigration.tests.utils import add_redirects
     >>> from Products.contentmigration.tests.utils import get_redirects
-    >>> self.portal.manage_permission(
+    >>> portal = layer['portal']
+    >>> portal.manage_permission(
     ...     ModifyPortalContent, ['Manager', 'Owner'], acquire=0)
 
     >>> foo_doc = _createObjectByType(
-    ...     'Document', self.portal, id='foo', title='Foo')
+    ...     'Document', portal, id='foo', title='Foo')
     >>> alsoProvides(foo_doc, MarkerInterface)
     >>> foo_doc.portal_type, foo_doc.getId(), foo_doc.Title()
     ('Document', 'foo', 'Foo')
     >>> add_redirects(['/plone/lol'], foo_doc)
 
     >>> bar_doc = _createObjectByType(
-    ...     'Document', self.portal, id='bar', title='Bar')
+    ...     'Document', portal, id='bar', title='Bar')
     >>> alsoProvides(bar_doc, MarkerInterface)
     >>> bar_doc.portal_type, bar_doc.getId(), bar_doc.Title()
     ('Document', 'bar', 'Bar')
@@ -37,7 +38,7 @@ another making use of the schemata for field migration::
     >>> foo_migrator.dst_portal_type = 'News Item'
     >>> foo_migrator.dst_meta_type = 'ATNewsItem'
     >>> foo_migrator.migrate()
-    >>> foo_news = self.portal.foo
+    >>> foo_news = portal.foo
     >>> foo_news.portal_type, foo_news.getId(), foo_news.Title()
     ('News Item', 'foo', 'Foo')
     >>> MarkerInterface.providedBy(foo_news)
@@ -50,7 +51,7 @@ another making use of the schemata for field migration::
     >>> bar_migrator.dst_portal_type = 'News Item'
     >>> bar_migrator.dst_meta_type = 'ATNewsItem'
     >>> bar_migrator.migrate()
-    >>> bar_news = self.portal.bar
+    >>> bar_news = portal.bar
     >>> bar_news.portal_type, bar_news.getId(), bar_news.Title()
     ('News Item', 'bar', 'Bar')
     >>> MarkerInterface.providedBy(bar_news)
@@ -61,7 +62,7 @@ another making use of the schemata for field migration::
 Folderish contents::
 
     >>> foo_folder = _createObjectByType(
-    ...     'Folder', self.portal, id='fold1', title='Fold1')
+    ...     'Folder', portal, id='fold1', title='Fold1')
     >>> foo_folder.portal_type, foo_folder.getId(), foo_folder.Title()
     ('Folder', 'fold1', 'Fold1')
     >>> foo_folder.portal_type
@@ -82,7 +83,7 @@ Add a simple object inside the folder::
     >>> ff_migrator.dst_portal_type = 'Folder'
     >>> ff_migrator.dst_meta_type = 'ATFolder'
     >>> ff_migrator.migrate()
-    >>> foo_folder = self.portal.fold1
+    >>> foo_folder = portal.fold1
     >>> foo_folder.Title()
     'Fold1'
     >>> get_redirects(foo_folder)
@@ -94,7 +95,7 @@ Add a simple object inside the folder::
     >>> ff_migrator.dst_portal_type = 'Folder'
     >>> ff_migrator.dst_meta_type = 'ATFolder'
     >>> ff_migrator.migrate()
-    >>> foo_folder = self.portal.fold1
+    >>> foo_folder = portal.fold1
     >>> foo_folder.Title()
     'Fold1'
     >>> get_redirects(foo_folder)

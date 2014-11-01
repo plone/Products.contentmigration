@@ -13,14 +13,16 @@ new side-by-side a pain.
 
 Also, we test what happens when the Owner and Creator differ::
 
-    >>> self.addProfile('Products.contentmigration:testing')
+    >>> portal = layer['portal']
+    >>> from plone.app.testing.helpers import applyProfile
+    >>> applyProfile(portal, 'Products.contentmigration:testing')
     >>> from Products.PloneTestCase.setup import _createObjectByType
     >>> cmf_foo = _createObjectByType(
-    ...     'CMF Document', self.portal, id='foo', title='Foo')
+    ...     'CMF Document', portal, id='foo', title='Foo')
     >>> member_id = 'tempuser'
-    >>> self.portal.portal_membership.addMember(member_id, 'secret',
+    >>> portal.portal_membership.addMember(member_id, 'secret',
     ...     ('Member', 'Manager'), [])
-    >>> user = self.portal.acl_users.getUserById(member_id)
+    >>> user = portal.acl_users.getUserById(member_id)
     >>> cmf_foo.changeOwnership(user)
 
     >>> cmf_foo.portal_type, cmf_foo.getId(), cmf_foo.Title()
@@ -36,7 +38,7 @@ Also, we test what happens when the Owner and Creator differ::
     >>> migrator = InplaceCMFItemMigrator(cmf_foo)
     >>> migrator.dst_portal_type = 'Document'
     >>> migrator.migrate()
-    >>> at_foo = self.portal.foo
+    >>> at_foo = portal.foo
 
     >>> at_foo.portal_type, at_foo.getId(), at_foo.Title()
     ('Document', 'foo', 'Foo')

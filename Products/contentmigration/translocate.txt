@@ -6,12 +6,14 @@ Translocating Migrators
 Translocating migrators place the new object in a different location
 from the old object::
 
-    >>> self.addProfile('Products.contentmigration:testing')
+    >>> portal = layer['portal']
+    >>> from plone.app.testing.helpers import applyProfile
+    >>> applyProfile(portal, 'Products.contentmigration:testing')
     >>> from Products.PloneTestCase.setup import _createObjectByType
     >>> foo = _createObjectByType(
-    ...     'Folder', self.portal, id='foo', title='Foo')
+    ...     'Folder', portal, id='foo', title='Foo')
     >>> bar = _createObjectByType(
-    ...     'CMF Document', self.portal, id='bar', title='Bar')
+    ...     'CMF Document', portal, id='bar', title='Bar')
 
     >>> from Products.contentmigration.translocate import TranslocatingInplaceCMFItemMigrator
     >>> class FooMigrator(TranslocatingInplaceCMFItemMigrator):
@@ -19,10 +21,10 @@ from the old object::
     ...     def getDestinationParent(self): return foo
     >>> migrator = FooMigrator(bar)
     >>> migrator.migrate()
-    >>> self.portal.bar
+    >>> portal.bar
     Traceback (most recent call last):
     ...
     AttributeError: bar
-    >>> at_bar = self.portal.foo.bar
+    >>> at_bar = portal.foo.bar
     >>> at_bar.portal_type, at_bar.getId(), at_bar.Title()
     ('Document', 'bar', 'Bar')

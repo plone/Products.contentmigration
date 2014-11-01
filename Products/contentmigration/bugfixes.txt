@@ -12,20 +12,23 @@ of the content.
     >>> from Products.CMFCore.permissions import ModifyPortalContent
     >>> from Products.CMFCore.permissions import ManageUsers
     >>> from Products.PloneTestCase.setup import _createObjectByType
-    >>> self.portal.manage_permission(
+    >>> app = layer['app']
+    >>> portal = layer['portal']
+    >>> portal.manage_permission(
     ...     ModifyPortalContent, ['Manager', 'Owner'], acquire=0)
 
     Create a 'tempuser' to generate some content, then delete the user
     prior to migration
 
     >>> member_id = 'tempuser'
-    >>> self.portal.portal_membership.addMember(member_id, 'secret',
+    >>> portal.portal_membership.addMember(member_id, 'secret',
     ...     ('Member', 'Manager'), [])
-    >>> user = self.portal.acl_users.getUserById(member_id)
-    >>> self.login(member_id)
+    >>> user = portal.acl_users.getUserById(member_id)
+    >>> from plone.app import testing
+    >>> testing.login(portal, member_id)
 
     >>> bar_doc = _createObjectByType(
-    ...     'Document', self.portal, id='bar', title='Bar')
+    ...     'Document', portal, id='bar', title='Bar')
     >>> bar_doc.portal_type, bar_doc.getId(), bar_doc.Title()
     ('Document', 'bar', 'Bar')
 
@@ -41,8 +44,9 @@ of the content.
 
     Delete the member
 
-    >>> self.loginAsPortalOwner()
-    >>> self.portal.portal_membership.deleteMembers([member_id])
+    >>> from plone.testing import z2
+    >>> z2.login(app['acl_users'], testing.SITE_OWNER_NAME)
+    >>> portal.portal_membership.deleteMembers([member_id])
     ('tempuser',)
 
     Local roles still healthy
@@ -61,7 +65,7 @@ of the content.
     >>> bar_migrator.dst_portal_type = 'News Item'
     >>> bar_migrator.dst_meta_type = 'ATNewsItem'
     >>> bar_migrator.migrate()
-    >>> bar_news = self.portal.bar
+    >>> bar_news = portal.bar
     >>> bar_news.portal_type, bar_news.getId(), bar_news.Title()
     ('News Item', 'bar', 'Bar')
 
@@ -75,21 +79,21 @@ of the content.
 
 Locked objects should be unlocked before being migrated
 
-    >>> self.loginAsPortalOwner()
+    >>> z2.login(app['acl_users'], testing.SITE_OWNER_NAME)
     >>> foo_doc = _createObjectByType(
-    ...     'Document', self.portal, id='foo', title='Foo')
+    ...     'Document', portal, id='foo', title='Foo')
     >>> foo_doc.portal_type, foo_doc.getId(), foo_doc.Title()
     ('Document', 'foo', 'Foo')
     >>> commit()
 
-    >>> foo_doc = self.portal.foo
+    >>> foo_doc = portal.foo
     >>> from plone.locking.interfaces import ILockable
     >>> ILockable(foo_doc).lock()
     >>> foo_migrator = ATItemMigrator(foo_doc)
     >>> foo_migrator.dst_portal_type = 'News Item'
     >>> foo_migrator.dst_meta_type = 'ATNewsItem'
     >>> foo_migrator.migrate()
-    >>> foo_news = self.portal.foo
+    >>> foo_news = portal.foo
     >>> foo_news.portal_type, foo_news.getId(), foo_news.Title()
     ('News Item', 'foo', 'Foo')
 
@@ -97,14 +101,14 @@ Objects locked with webdav should also be unlocked before being
 migrated.  We cheat when pretending to be locked by webdav in this
 test by patching the relevant webdav methods.
 
-    >>> self.loginAsPortalOwner()
+    >>> z2.login(app['acl_users'], testing.SITE_OWNER_NAME)
     >>> dav_doc = _createObjectByType(
-    ...     'Document', self.portal, id='dav', title='Dav')
+    ...     'Document', portal, id='dav', title='Dav')
     >>> dav_doc.portal_type, dav_doc.getId(), dav_doc.Title()
     ('Document', 'dav', 'Dav')
     >>> commit()
 
-    >>> dav_doc = self.portal.dav
+    >>> dav_doc = portal.dav
     >>> _orig_wl_isLocked = dav_doc.wl_isLocked
     >>> def dummy_isLocked():
     ...     return True
@@ -117,6 +121,6 @@ test by patching the relevant webdav methods.
     >>> dav_migrator.dst_portal_type = 'News Item'
     >>> dav_migrator.dst_meta_type = 'ATNewsItem'
     >>> dav_migrator.migrate()
-    >>> dav_news = self.portal.dav
+    >>> dav_news = portal.dav
     >>> dav_news.portal_type, dav_news.getId(), dav_news.Title()
     ('News Item', 'dav', 'Dav')
