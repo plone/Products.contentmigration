@@ -4,7 +4,8 @@ Changelog
 2.1.10 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Ported to plone.app.testing
+  [acattla, tomgross]
 
 
 2.1.9 (2014-09-07)

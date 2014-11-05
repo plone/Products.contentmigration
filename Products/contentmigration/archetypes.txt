@@ -7,7 +7,7 @@ These are migrators for migrating from one archetypes object to
 another making use of the schemata for field migration::
 
     >>> from Products.CMFCore.permissions import ModifyPortalContent
-    >>> from Products.PloneTestCase.setup import _createObjectByType
+    >>> from Products.CMFPlone.utils import _createObjectByType  
     >>> from zope.interface import alsoProvides
     >>> from Products.contentmigration.tests.utils import MarkerInterface
     >>> from Products.contentmigration.tests.utils import add_redirects

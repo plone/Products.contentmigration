@@ -16,7 +16,7 @@ Also, we test what happens when the Owner and Creator differ::
     >>> portal = layer['portal']
     >>> from plone.app.testing.helpers import applyProfile
     >>> applyProfile(portal, 'Products.contentmigration:testing')
-    >>> from Products.PloneTestCase.setup import _createObjectByType
+    >>> from Products.CMFPlone.utils import _createObjectByType  
     >>> cmf_foo = _createObjectByType(
     ...     'CMF Document', portal, id='foo', title='Foo')
     >>> member_id = 'tempuser'

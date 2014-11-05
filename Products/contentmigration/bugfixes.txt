@@ -11,7 +11,7 @@ of the content.
 
     >>> from Products.CMFCore.permissions import ModifyPortalContent
     >>> from Products.CMFCore.permissions import ManageUsers
-    >>> from Products.PloneTestCase.setup import _createObjectByType
+    >>> from Products.CMFPlone.utils import _createObjectByType  
     >>> app = layer['app']
     >>> portal = layer['portal']
     >>> portal.manage_permission(

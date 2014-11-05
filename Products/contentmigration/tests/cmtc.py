@@ -1,4 +1,3 @@
-from Testing.ZopeTestCase import Sandboxed
 from Products.contentmigration.migrator import InlineFieldActionMigrator
 from Products.contentmigration.walker import CustomQueryWalker
 from Products.contentmigration.tests.layer import TestLayer
