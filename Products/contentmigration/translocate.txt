@@ -9,7 +9,7 @@ from the old object::
     >>> portal = layer['portal']
     >>> from plone.app.testing.helpers import applyProfile
     >>> applyProfile(portal, 'Products.contentmigration:testing')
-    >>> from Products.PloneTestCase.setup import _createObjectByType
+    >>> from Products.CMFPlone.utils import _createObjectByType  
     >>> foo = _createObjectByType(
     ...     'Folder', portal, id='foo', title='Foo')
     >>> bar = _createObjectByType(

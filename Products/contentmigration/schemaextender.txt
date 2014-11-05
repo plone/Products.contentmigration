@@ -7,7 +7,7 @@ This tests migration of items that have been extended with extra
 fields by archetypes.schemaextender.
 
     >>> from Products.CMFCore.permissions import ModifyPortalContent
-    >>> from Products.PloneTestCase.setup import _createObjectByType
+    >>> from Products.CMFPlone.utils import _createObjectByType  
     >>> portal = layer['portal']
     >>> portal.manage_permission(
     ...     ModifyPortalContent, ['Manager', 'Owner'], acquire=0)
