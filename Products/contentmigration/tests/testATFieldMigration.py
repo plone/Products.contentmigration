@@ -33,6 +33,8 @@ class TestFieldMigration(ContentMigratorTestCase):
         self.folder['n2'].setDescription('Description 4')
         self.folder['n2'].setText('News two')
 
+        if 'front-page' in self.portal.objectIds():
+            self.portal._delObject('front-page')
         self.setRoles(['Manager', 'Member'])
 
     def testAttributeRenaming(self):
