@@ -7,7 +7,7 @@ These are migrators for migrating from one archetypes object to
 another making use of the schemata for field migration::
 
     >>> from Products.CMFCore.permissions import ModifyPortalContent
-    >>> from Products.CMFPlone.utils import _createObjectByType  
+    >>> from Products.CMFPlone.utils import _createObjectByType
     >>> from zope.interface import alsoProvides
     >>> from Products.contentmigration.tests.utils import MarkerInterface
     >>> from Products.contentmigration.tests.utils import add_redirects
@@ -62,9 +62,9 @@ another making use of the schemata for field migration::
 Folderish contents::
 
     >>> foo_folder = _createObjectByType(
-    ...     'Folder', portal, id='fold1', title='Fold1')
+    ...     'Folder', portal, id='fold2', title='Fold2')
     >>> foo_folder.portal_type, foo_folder.getId(), foo_folder.Title()
-    ('Folder', 'fold1', 'Fold1')
+    ('Folder', 'fold2', 'Fold2')
     >>> foo_folder.portal_type
     'Folder'
     >>> add_redirects(['/plone/bike', '/plone/head'], foo_folder)
@@ -79,25 +79,25 @@ Add a simple object inside the folder::
 
     >>> from Products.contentmigration.archetypes import ATFolderMigrator
     >>> ff_migrator = ATFolderMigrator(foo_folder)
-    >>> 
+    >>>
     >>> ff_migrator.dst_portal_type = 'Folder'
     >>> ff_migrator.dst_meta_type = 'ATFolder'
     >>> ff_migrator.migrate()
-    >>> foo_folder = portal.fold1
+    >>> foo_folder = portal.fold2
     >>> foo_folder.Title()
-    'Fold1'
+    'Fold2'
     >>> get_redirects(foo_folder)
     ['/plone/bike', '/plone/head']
 
     >>> from Products.contentmigration.archetypes import InplaceATFolderMigrator
     >>> ff_migrator = InplaceATFolderMigrator(foo_folder)
-    >>> 
+    >>>
     >>> ff_migrator.dst_portal_type = 'Folder'
     >>> ff_migrator.dst_meta_type = 'ATFolder'
     >>> ff_migrator.migrate()
-    >>> foo_folder = portal.fold1
+    >>> foo_folder = portal.fold2
     >>> foo_folder.Title()
-    'Fold1'
+    'Fold2'
     >>> get_redirects(foo_folder)
     ['/plone/bike', '/plone/head']
 
