@@ -21,5 +21,12 @@ class Document(PortalContent):
     def Title(self):
         return self.title
 
+    def listCreators(self):
+        return ('test_user_1_',)
+
+    def Creator(self):
+        return self.listCreators()[0]
+
+
 InitializeClass(Document)
 DocumentFactory = Factory(Document)
