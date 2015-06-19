@@ -7,7 +7,7 @@
   They may also contain HTML, or "plain" text.</property>
  <property name="content_icon">document_icon.gif</property>
  <property name="content_meta_type">Document</property>
- <property name="product">CMFDefault</property>
+ <property name="product">contentmigration</property>
  <property name="factory">addDocument</property>
  <property name="immediate_view">document_view</property>
  <property name="global_allow">False</property>

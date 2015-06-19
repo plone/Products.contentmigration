@@ -4,7 +4,8 @@ Changelog
 2.1.11 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Remove implicit dependency on CMFDefault by moving testcontent to product
+  [tomgross]
 
 
 2.1.10 (2015-04-17)
