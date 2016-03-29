@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Migration tools for ATContentTypes
 
 Migration system for the migration from CMFDefault/Event types to archetypes
@@ -41,13 +42,6 @@ except pkg_resources.DistributionNotFound:
 else:
     HAS_LINGUA_PLONE = True
 
-if not HAS_LINGUA_PLONE:
-    try:
-        pkg_resources.get_distribution('plone.app.multilingual')
-    except pkg_resources.DistributionNotFound:
-        HAS_LINGUA_PLONE = False
-    else:
-        HAS_LINGUA_PLONE = True
 
 LOG = logging.getLogger('ATCT.migration')
 
