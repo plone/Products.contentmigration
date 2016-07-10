@@ -4,16 +4,16 @@ from Products.Archetypes.public import StringWidget
 from archetypes.schemaextender.field import ExtensionField
 from archetypes.schemaextender.interfaces import ISchemaExtender
 from zope.component import adapts
-from zope.interface import implements
+from zope.interface import implementer
 
 
 class MyStringField(ExtensionField, StringField):
     """A trivial field."""
 
 
+@implementer(ISchemaExtender)
 class PageExtender(object):
     adapts(IATDocument)  # XXX Might not work on Plone 3.
-    implements(ISchemaExtender)
 
     fields = [
         MyStringField(

@@ -14,7 +14,8 @@ New:
 
 Fixes:
 
-- *add item here*
+- Use zope.interface decorator.
+  [gforcada]
 
 
 2.1.12 (2016-03-31)
@@ -22,7 +23,7 @@ Fixes:
 
 Fixes:
 
-- HAS_LINGUA_PLONE now checks only if LinguaPlone is installed. 
+- HAS_LINGUA_PLONE now checks only if LinguaPlone is installed.
   No more if LinguaPlone or plone.app.multilingual is installed.
   [bsuttor]
 
