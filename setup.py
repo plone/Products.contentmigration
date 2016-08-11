@@ -6,8 +6,8 @@ setup(
     name='Products.contentmigration',
     version=version,
     description="A generic content migration framework for Plone.",
-    long_description=(open("README.txt").read() + "\n" +
-                      open("CHANGES.txt").read()),
+    long_description=(open("README.rst").read() + "\n" +
+                      open("CHANGES.rst").read()),
     classifiers=[
         "Framework :: Plone",
         "Framework :: Plone :: 4.3",
