@@ -1,5 +1,4 @@
 from App.class_init import InitializeClass
-from Products.Archetypes import atapi
 from Products.CMFCore.PortalContent import PortalContent
 from zope.component.factory import Factory
 
