@@ -14,7 +14,7 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Remove unused import of Archetypes. [davisagli]
 
 
 2.1.13 (2016-08-11)
