@@ -12,7 +12,6 @@ from Acquisition import aq_base, aq_inner, aq_parent
 from App.Dialogs import MessageDialog
 from OFS.event import ObjectWillBeMovedEvent
 from OFS.CopySupport import sanity_check, CopyError
-from OFS.CopySupport import eNotSupported
 from ZODB.POSException import ConflictError
 
 
@@ -21,7 +20,7 @@ def unrestricted_move(self, ob):
     checks."""
     orig_id = ob.getId()
     if not ob.cb_isMoveable():
-        raise CopyError(eNotSupported % escape(orig_id))
+        raise CopyError('Not supported {}'.format(escape(orig_id)))
 
     try:
         ob._notifyOfCopyTo(self, op=1)

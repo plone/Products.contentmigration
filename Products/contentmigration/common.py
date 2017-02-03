@@ -78,7 +78,6 @@ from Acquisition import aq_base
 from App.Dialogs import MessageDialog
 #from OFS.CopySupport import CopyContainer
 from OFS.CopySupport import CopyError
-from OFS.CopySupport import eNotSupported
 from cgi import escape
 
 def unrestricted_rename(self, id, new_id):
@@ -100,7 +99,7 @@ def unrestricted_rename(self, id, new_id):
     #!#if ob.wl_isLocked():
     #!#    raise ResourceLockedError, 'Object "%s" is locked via WebDAV' % ob.getId()
     if not ob.cb_isMoveable():
-        raise CopyError, eNotSupported % escape(id)
+        raise CopyError,'Not supported {}'.format(escape(id))
     #!#self._verifyObjectPaste(ob)
     #!#CopyContainer._verifyObjectPaste(self, ob)
     try:    ob._notifyOfCopyTo(self, op=1)

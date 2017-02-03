@@ -14,7 +14,8 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Errors has been dropped/deprecated errors from OFS.CopySupport.
+  [tschorr]
 
 
 2.1.14 (2016-11-01)
