@@ -4,14 +4,6 @@ Changelog
 2.1.15 (unreleased)
 -------------------
 
-Breaking changes:
-
-- *add item here*
-
-New features:
-
-- *add item here*
-
 Bug fixes:
 
 - Errors has been dropped/deprecated errors from OFS.CopySupport.
