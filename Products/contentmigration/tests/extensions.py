@@ -1,4 +1,4 @@
-from Products.ATContentTypes.interface import IATDocument
+from Products.ATContentTypes.interfaces import IATDocument
 from Products.Archetypes.public import StringField
 from Products.Archetypes.public import StringWidget
 from archetypes.schemaextender.field import ExtensionField
