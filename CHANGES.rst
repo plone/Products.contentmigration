@@ -14,7 +14,8 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Unpack brains to be able to log broken catalog-records during migration.
+  [pbauer]
 
 
 2.1.16 (2017-03-09)

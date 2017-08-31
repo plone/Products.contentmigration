@@ -59,11 +59,17 @@ class CustomQueryWalker(CatalogWalker):
         if limit:
             brains = brains[:limit]
 
+        # unpack to be able to log brains that break during migration
+        brains = [i for i in brains]
+
         for brain in brains:
             try:
                 obj = brain.getObject()
             except AttributeError:
                 LOG.error("Couldn't access %s" % brain.getPath())
+                continue
+            except KeyError:
+                LOG.error("Couldn't access RID %s" % brain.getRID())
                 continue
 
             if self.callBefore is not None and callable(self.callBefore):
