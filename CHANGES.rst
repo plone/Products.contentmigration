@@ -4,14 +4,6 @@ Changelog
 2.1.17 (unreleased)
 -------------------
 
-Breaking changes:
-
-- *add item here*
-
-New features:
-
-- *add item here*
-
 Bug fixes:
 
 - Unpack brains to be able to log broken catalog-records during migration.
