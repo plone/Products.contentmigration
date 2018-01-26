@@ -18,18 +18,20 @@ are permitted provided that the following conditions are met:
    to endorse or promote products derived from this software without specific
    prior written permission.
 """
+from __future__ import print_function
 __author__  = 'Christian Heimes <tiran@cheimes.de>'
 __docformat__ = 'restructuredtext'
+
+from Products.CMFCore.utils import getToolByName
+from Products.contentmigration.common import HAS_LINGUA_PLONE
+from Products.contentmigration.common import registerWalker
+from six.moves import cStringIO as StringIO
+from ZODB.POSException import ConflictError
 
 import logging
 import traceback
 import transaction
-from cStringIO import StringIO
 
-from Products.contentmigration.common import HAS_LINGUA_PLONE
-from Products.contentmigration.common import registerWalker
-from ZODB.POSException import ConflictError
-from Products.CMFCore.utils import getToolByName
 
 LOG = logging.getLogger('ATCT.migration')
 
@@ -179,7 +181,7 @@ class Walker(object):
             msg = 'Migrating %s (%s -> %s)' % (objpath, src_portal_type,
                                                dst_portal_type)
             LOG.debug(msg)
-            print >>out, msg
+            print(msg, file=out)
             counter+=1
 
             migrator = self.migrator(obj,
@@ -207,8 +209,8 @@ class Walker(object):
                     if savepoint.valid:
                         # Rollback to savepoint
                         LOG.info("Rolling back to last safe point")
-                        print >>out, msg
-                        print >>out, tb
+                        print(msg, file=out)
+                        print(tb, file=out)
                         savepoint.rollback()
                         # XXX: savepoints are invalidated once they are used
                         savepoint = transaction.savepoint()

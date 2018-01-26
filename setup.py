@@ -31,6 +31,7 @@ setup(
             'archetypes.schemaextender',
             'plone.app.testing',
             'Products.CMFPlone',
+            'six',
             'zope.testing',
             'Zope2',
         ],
