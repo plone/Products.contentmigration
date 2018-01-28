@@ -21,17 +21,17 @@ are permitted provided that the following conditions are met:
 
 
 """
+from __future__ import print_function
 __author__  = 'Christian Heimes <tiran@cheimes.de>'
 __docformat__ = 'restructuredtext'
 
-import sys
-import logging
-import pkg_resources
-from cStringIO import StringIO
-
-from Products.CMFCore.utils import getToolByName
 from Products.contentmigration.catalogpatch import applyCatalogPatch
 from Products.contentmigration.catalogpatch import removeCatalogPatch
+from Products.CMFCore.utils import getToolByName
+
+import logging
+import pkg_resources
+import sys
 
 
 # Is there a multilingual addon?
@@ -79,6 +79,9 @@ from App.Dialogs import MessageDialog
 #from OFS.CopySupport import CopyContainer
 from OFS.CopySupport import CopyError
 from cgi import escape
+
+from six.moves import cStringIO as StringIO
+
 
 def unrestricted_rename(self, id, new_id):
     """Rename a particular sub-object
@@ -188,7 +191,7 @@ def migratePortalType(portal, src_portal_type, dst_portal_type, out=None,
     if migrator is not None:
         # got a migrator, make sure it is the right one
         if migrator is not migratorFromRegistry:
-            raise ValueError, "ups"
+            raise ValueError("ups")
     else:
         migrator = migratorFromRegistry
 
@@ -218,7 +221,7 @@ def migratePortalType(portal, src_portal_type, dst_portal_type, out=None,
         if use_catalog_patch:
             removeCatalogPatch(catalog_class)
 
-    print >>out, walk.getOutput()
+    print(walk.getOutput(), file=out)
     LOG.debug('<-- Migrating %s to %s done' % (src_portal_type, dst_portal_type))
 
     return out
