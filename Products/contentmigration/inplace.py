@@ -38,8 +38,8 @@ class BaseInplaceMigrator(BaseMigrator):
         """Check for an attribute on the migrator before loading and
         raise an error if it's already there."""
         if hasattr(self, attr):
-            raise ValueError, ('The migrator already has a value '
-                               'for %s.' % attr)
+            raise(ValueError, ('The migrator already has a value '
+                               'for %s.' % attr))
 
     def beforeChange_properties(self):
         """Load up the migrator with property values."""

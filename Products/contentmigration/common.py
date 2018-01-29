@@ -64,7 +64,7 @@ def _createObjectByType(type_name, container, id, *args, **kw):
     typesTool = getToolByName(container, 'portal_types')
     fti = typesTool.getTypeInfo(type_name)
     if not fti:
-        raise ValueError, 'Invalid type %s' % type_name
+        raise ValueError('Invalid type %s' % type_name)
 
     ob = fti._constructInstance(container, id, *args, **kw)
 
@@ -94,22 +94,22 @@ def unrestricted_rename(self, id, new_id):
           even unallowed portal types inside a folder
     """
     try: self._checkId(new_id)
-    except: raise CopyError, MessageDialog(
+    except: raise CopyError(MessageDialog(
                   title='Invalid Id',
                   message=sys.exc_info()[1],
-                  action ='manage_main')
+                  action ='manage_main'))
     ob=self._getOb(id)
     #!#if ob.wl_isLocked():
-    #!#    raise ResourceLockedError, 'Object "%s" is locked via WebDAV' % ob.getId()
+    #!#    raise(ResourceLockedError, 'Object "%s" is locked via WebDAV' % ob.getId())
     if not ob.cb_isMoveable():
-        raise CopyError,'Not supported {}'.format(escape(id))
+        raise CopyError('Not supported {}'.format(escape(id)))
     #!#self._verifyObjectPaste(ob)
     #!#CopyContainer._verifyObjectPaste(self, ob)
     try:    ob._notifyOfCopyTo(self, op=1)
-    except: raise CopyError, MessageDialog(
+    except: raise(CopyError, MessageDialog(
                   title='Rename Error',
                   message=sys.exc_info()[1],
-                  action ='manage_main')
+                  action ='manage_main'))
     self._delObject(id)
     ob = aq_base(ob)
     ob._setId(new_id)
@@ -180,18 +180,18 @@ def migratePortalType(portal, src_portal_type, dst_portal_type, out=None,
     src = ttool.getTypeInfo(src_portal_type)
     dst = ttool.getTypeInfo(dst_portal_type)
     if src is None or dst is None:
-        raise ValueError, "Unknown src or dst portal type: %s -> %s" % (
-                           src_portal_type, dst_portal_type,)
+        raise ValueError('Unknown src or dst portal type: %s -> %s' % (
+                           src_portal_type, dst_portal_type,))
 
     key = (src.Metatype(), dst.Metatype())
     migratorFromRegistry = getMigrator(key)
     if migratorFromRegistry is None:
-        raise ValueError, "No registered migrator for '%s' found" % str(key)
+        raise ValueError('No registered migrator for "%s" found' % str(key))
 
     if migrator is not None:
         # got a migrator, make sure it is the right one
         if migrator is not migratorFromRegistry:
-            raise ValueError("ups")
+            raise ValueError('ups')
     else:
         migrator = migratorFromRegistry
 
@@ -206,7 +206,7 @@ def migratePortalType(portal, src_portal_type, dst_portal_type, out=None,
     if kwargs.get('full_transaction', False):
         msg+=', using full transactions'
 
-    print >> out, msg
+    print(msg, file=sys.stderr)
     LOG.debug(msg)
 
     walk = Walker(portal, migrator, src_portal_type=src_portal_type,

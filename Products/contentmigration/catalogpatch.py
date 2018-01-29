@@ -68,9 +68,9 @@ def applyCatalogPatch(portal):
     LOG.info('Patching catalog_object and uncatalog_object of %s' %
              catalog.absolute_url(1))
     if hasattr(klass, '_atct_catalog_object'):
-        raise RuntimeError, "%s already has _atct_catalog_object" % catalog
+        raise RuntimeError("%s already has _atct_catalog_object" % catalog)
     if hasattr(klass, '_atct_uncatalog_object'):
-        raise RuntimeError, "%s already has _atct_uncatalog_object" % catalog
+        raise RuntimeError("%s already has _atct_uncatalog_object" % catalog)
 
     klass._atct_catalog_object = klass.catalog_object.im_func
     klass.catalog_object = instancemethod(catalog_object, None, klass)
