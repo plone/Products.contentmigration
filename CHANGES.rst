@@ -4,18 +4,10 @@ Changelog
 2.1.19 (unreleased)
 -------------------
 
-Breaking changes:
-
-- *add item here*
-
 New features:
 
 - More Python 2 / 3 compatibility adjustments
   [davilima6]
-
-Bug fixes:
-
-- *add item here*
 
 
 2.1.18 (2018-01-30)
