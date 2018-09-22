@@ -14,8 +14,8 @@ New features:
 
 Bug fixes:
 
-- *add item here*
-
+- Switch to new TestCase using AT after PloneTestcase is now DX.
+  [pbauer]
 
 2.1.19 (2018-02-02)
 -------------------
