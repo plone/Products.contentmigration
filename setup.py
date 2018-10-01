@@ -21,7 +21,7 @@ setup(
     keywords='Plone Archetypes ATContentTypes',
     author='Martin Aspeli (and others)',
     author_email='plone-developers@lists.sourceforge.net',
-    url='https://pypi.python.org/pypi/Products.contentmigration',
+    url='https://pypi.org/project/Products.contentmigration',
     license='LGPL',
     packages=find_packages(exclude=['ez_setup']),
     namespace_packages=['Products'],
