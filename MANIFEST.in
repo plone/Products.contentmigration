@@ -3,3 +3,6 @@ include *.rst
 recursive-include Products *
 
 global-exclude *pyc
+include pyproject.toml
+recursive-exclude news *
+exclude news

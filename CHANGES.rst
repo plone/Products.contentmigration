@@ -1,21 +1,13 @@
 Changelog
 =========
 
-2.1.20 (unreleased)
--------------------
+.. You should *NOT* be adding new change log entries to this file.
+   You should create a file in the news directory instead.
+   For helpful instructions, please see:
+   https://github.com/plone/plone.releaser/blob/master/ADD-A-NEWS-ITEM.rst
 
-Breaking changes:
+.. towncrier release notes start
 
-- *add item here*
-
-New features:
-
-- *add item here*
-
-Bug fixes:
-
-- Switch to new TestCase using AT after PloneTestcase is now DX.
-  [pbauer]
 
 2.1.19 (2018-02-02)
 -------------------
