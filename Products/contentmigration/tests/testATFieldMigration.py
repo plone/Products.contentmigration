@@ -152,10 +152,5 @@ class TestFieldMigration(ContentMigratorTestCase):
                     },)
         self.execute(query, actions)
         self.assertEqual(storage.get('text', self.folder['d2']).getRaw(), 'Body two')
-        self.assertRaises(AttributeError, storage.get, 'text', self.folder['d1'])
-
-def test_suite():
-    from unittest import TestSuite, makeSuite
-    suite = TestSuite()
-    suite.addTest(makeSuite(TestFieldMigration))
-    return suite
+        with self.assertRaises(AttributeError):
+            storage.get('text', self.folder['d1'])
