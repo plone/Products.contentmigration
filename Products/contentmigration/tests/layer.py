@@ -27,6 +27,7 @@ class PloneTestCaseFixture(bbb_at.PloneTestCaseFixture):
     def setUpPloneSite(self, portal):
         testing.applyProfile(portal, 'Products.contentmigration:CMF_sampletypes')
 
+
 PCM_FIXTURE = PloneTestCaseFixture()
 TestLayer = testing.FunctionalTesting(
     bases=(PCM_FIXTURE, ), name='PloneContentMigrationTestCase:Functional')
