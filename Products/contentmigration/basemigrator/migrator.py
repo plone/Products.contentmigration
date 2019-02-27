@@ -569,12 +569,10 @@ class FolderMigrationMixin(ItemMigrationMixin):
         """
         subobjs = self.subobjs
         for id, obj in subobjs.items():
-            # we have to use _setObject instead of _setOb because it adds the object
-            # to folder._objects but also reindexes all objects.
             __traceback_info__ = __traceback_info__ = ('migrate_children',
                           self.old, self.orig_id, 'Migrating subobject %s' % id)
             try:
-                self.new._setObject(id, obj, set_owner=0)
+                self.new._setOb(id, obj)
             except BadRequest:
                 # If we already have the object we need to remove it carefully
                 # and retry.  We can assume that such an object must be
@@ -587,7 +585,7 @@ class FolderMigrationMixin(ItemMigrationMixin):
                     if getattr(self.new, '_objects', None) is not None:
                         self.new._objects = tuple([o for o in
                                         self.new._objects if o['id'] != id])
-                    self.new._setObject(id, obj, set_owner=0)
+                    self.new._setOb(id, obj)
                 else:
                     raise
 
