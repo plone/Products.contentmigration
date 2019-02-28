@@ -50,6 +50,8 @@ try:
     IRedirectionStorage  # pyflakes
 except ImportError:
     IRedirectionStorage = None
+from plone import api
+
 try:
     from Products.Archetypes.config import UUID_ATTR
 except ImportError:
@@ -627,6 +629,8 @@ class UIDMigrator(object):
             setattr(self.old, UUID_ATTR, None)
         if queryAdapter(self.new, IMutableUUID):
             IMutableUUID(self.new).set(str(uid))
+            uid_catalog = api.portal.get_tool('uid_catalog')
+            uid_catalog._catalogObject(self.new, self.new.getPhysicalPath())
         else:
             self.new._setUID(uid)
 
