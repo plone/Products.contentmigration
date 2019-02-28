@@ -618,7 +618,7 @@ class UIDMigrator(object):
         if uid is not None:
             uidhandler.setUid(self.new, uid, check_uniqueness=False)
 
-    def migrate_at_uuid(self):
+    def last_migrate_at_uuid(self):
         """Migrate AT universal uid
         """
         if not IReferenceable.providedBy(self.old):
