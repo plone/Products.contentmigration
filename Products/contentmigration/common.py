@@ -7,8 +7,8 @@ based CMFPloneTypes (http://plone.org/products/atcontenttypes/).
 Copyright (c) 2004, Christian Heimes <tiran@cheimes.de> and contributors
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
 
  * Redistributions of source code must retain the above copyright notice, this
    list of conditions and the following disclaimer.
@@ -22,16 +22,24 @@ are permitted provided that the following conditions are met:
 
 """
 from __future__ import print_function
-__author__  = 'Christian Heimes <tiran@cheimes.de>'
-__docformat__ = 'restructuredtext'
+
+import logging
+import pkg_resources
+import sys
+from cgi import escape
+
+from Acquisition import aq_base
+from App.Dialogs import MessageDialog
+from OFS.CopySupport import CopyError
+
+from six.moves import cStringIO as StringIO
 
 from Products.contentmigration.catalogpatch import applyCatalogPatch
 from Products.contentmigration.catalogpatch import removeCatalogPatch
 from Products.CMFCore.utils import getToolByName
 
-import logging
-import pkg_resources
-import sys
+__author__ = 'Christian Heimes <tiran@cheimes.de>'
+__docformat__ = 'restructuredtext'
 
 
 # Is there a multilingual addon?
@@ -44,6 +52,7 @@ else:
 
 
 LOG = logging.getLogger('ATCT.migration')
+
 
 # This method was coded by me (Tiran) for CMFPlone. I'm maintaining a copy here
 # to avoid dependencies on CMFPlone
@@ -58,7 +67,8 @@ def _createObjectByType(type_name, container, id, *args, **kw):
     CMFCore.TypesTool.FactoryTypeInformation.constructInstance
     to create the object without security checks.
 
-    It doesn't finish the construction and so doesn't reinitializes the workflow.
+    It doesn't finish the construction and so doesn't reinitializes the
+    workflow.
     """
     id = str(id)
     typesTool = getToolByName(container, 'portal_types')
@@ -74,14 +84,6 @@ def _createObjectByType(type_name, container, id, *args, **kw):
 
     return ob
 
-from Acquisition import aq_base
-from App.Dialogs import MessageDialog
-#from OFS.CopySupport import CopyContainer
-from OFS.CopySupport import CopyError
-from cgi import escape
-
-from six.moves import cStringIO as StringIO
-
 
 def unrestricted_rename(self, id, new_id):
     """Rename a particular sub-object
@@ -93,23 +95,23 @@ def unrestricted_rename(self, id, new_id):
         * no verify object check from PortalFolder so it's allowed to rename
           even unallowed portal types inside a folder
     """
-    try: self._checkId(new_id)
-    except: raise CopyError(MessageDialog(
-                  title='Invalid Id',
-                  message=sys.exc_info()[1],
-                  action ='manage_main'))
-    ob=self._getOb(id)
-    #!#if ob.wl_isLocked():
-    #!#    raise(ResourceLockedError, 'Object "%s" is locked via WebDAV' % ob.getId())
+    try:
+        self._checkId(new_id)
+    except Exception:
+        raise CopyError(MessageDialog(
+            title='Invalid Id',
+            message=sys.exc_info()[1],
+            action='manage_main'))
+    ob = self._getOb(id)
     if not ob.cb_isMoveable():
         raise CopyError('Not supported {}'.format(escape(id)))
-    #!#self._verifyObjectPaste(ob)
-    #!#CopyContainer._verifyObjectPaste(self, ob)
-    try:    ob._notifyOfCopyTo(self, op=1)
-    except: raise(CopyError, MessageDialog(
-                  title='Rename Error',
-                  message=sys.exc_info()[1],
-                  action ='manage_main'))
+    try:
+        ob._notifyOfCopyTo(self, op=1)
+    except Exception:
+        raise(CopyError, MessageDialog(
+            title='Rename Error',
+            message=sys.exc_info()[1],
+            action='manage_main'))
     self._delObject(id)
     ob = aq_base(ob)
     ob._setId(new_id)
@@ -120,9 +122,8 @@ def unrestricted_rename(self, id, new_id):
     ob = self._getOb(new_id)
     ob._postCopy(self, op=1)
 
-    #!#if REQUEST is not None:
-    #!#    return self.manage_main(self, REQUEST, update_menu=1)
     return None
+
 
 class Registry(dict):
     """Common registry
@@ -130,6 +131,7 @@ class Registry(dict):
 
     def register(self, cls):
         self[cls.__name__] = cls
+
 
 class MigratorRegistry(Registry):
     """Migrator Registry
@@ -150,10 +152,12 @@ class MigratorRegistry(Registry):
         self[key] = cls
         self[cls.__name__] = cls
 
+
 class WalkerRegistry(Registry):
     """Walker Registry
     """
     pass
+
 
 _migratorRegistry = MigratorRegistry()
 registerMigrator = _migratorRegistry.register
@@ -164,6 +168,7 @@ getMigrator = _migratorRegistry.get
 _walkerRegistry = WalkerRegistry()
 registerWalker = _walkerRegistry.register
 listWalkers = _walkerRegistry.items
+
 
 def migratePortalType(portal, src_portal_type, dst_portal_type, out=None,
                       migrator=None, use_catalog_patch=False, **kwargs):
@@ -197,21 +202,22 @@ def migratePortalType(portal, src_portal_type, dst_portal_type, out=None,
 
     Walker = migrator.walkerClass
 
-    msg = '--> Migrating %s to %s with %s' % (src_portal_type,
-           dst_portal_type, Walker.__name__)
+    msg = '--> Migrating %s to %s with %s' % (
+        src_portal_type, dst_portal_type, Walker.__name__)
     if use_catalog_patch:
-        msg+=', using catalog patch'
+        msg += ', using catalog patch'
     if kwargs.get('use_savepoint', False):
-        msg+=', using savepoints'
+        msg += ', using savepoints'
     if kwargs.get('full_transaction', False):
-        msg+=', using full transactions'
+        msg += ', using full transactions'
 
     print(msg, file=sys.stderr)
     LOG.debug(msg)
 
     walk = Walker(portal, migrator, src_portal_type=src_portal_type,
                   dst_portal_type=dst_portal_type, **kwargs)
-    # wrap catalog patch inside a try/finally clause to make sure that the catalog
+    # wrap catalog patch inside a try/finally clause to make sure that the
+    # catalog
     # is unpatched under *any* circumstances (hopely)
     try:
         if use_catalog_patch:
@@ -222,9 +228,7 @@ def migratePortalType(portal, src_portal_type, dst_portal_type, out=None,
             removeCatalogPatch(catalog_class)
 
     print(walk.getOutput(), file=out)
-    LOG.debug('<-- Migrating %s to %s done' % (src_portal_type, dst_portal_type))
+    LOG.debug('<-- Migrating %s to %s done' % (
+        src_portal_type, dst_portal_type))
 
     return out
-
-
-
