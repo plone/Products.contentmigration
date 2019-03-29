@@ -26,13 +26,21 @@ from __future__ import print_function
 import logging
 import pkg_resources
 import sys
-from cgi import escape
-
-from Acquisition import aq_base
-from App.Dialogs import MessageDialog
-from OFS.CopySupport import CopyError
+import warnings
+import cgi
 
 from six.moves import cStringIO as StringIO
+
+from zope import event
+from zope import lifecycleevent
+from zope.container import contained
+
+from ZODB import POSException
+
+from Acquisition import aq_base
+from App import Dialogs
+from OFS import event as ofs_event
+from OFS import CopySupport
 
 from Products.contentmigration.catalogpatch import applyCatalogPatch
 from Products.contentmigration.catalogpatch import removeCatalogPatch
@@ -98,28 +106,53 @@ def unrestricted_rename(self, id, new_id):
     try:
         self._checkId(new_id)
     except Exception:
-        raise CopyError(MessageDialog(
+        raise CopySupport.CopyError(Dialogs.MessageDialog(
             title='Invalid Id',
             message=sys.exc_info()[1],
             action='manage_main'))
+
     ob = self._getOb(id)
+
     if not ob.cb_isMoveable():
-        raise CopyError('Not supported {}'.format(escape(id)))
+        raise CopySupport.CopyError(
+            CopySupport.eNotSupported % cgi.escape(id))
+
     try:
         ob._notifyOfCopyTo(self, op=1)
+    except POSException.ConflictError:
+        raise
     except Exception:
-        raise(CopyError, MessageDialog(
-            title='Rename Error',
+        raise CopySupport.CopyError(Dialogs.MessageDialog(
+            title="Rename Error",
             message=sys.exc_info()[1],
             action='manage_main'))
-    self._delObject(id)
+
+    event.notify(ofs_event.ObjectWillBeMovedEvent(ob, self, id, self, new_id))
+
+    try:
+        self._delObject(id, suppress_events=True)
+    except TypeError:
+        self._delObject(id)
+        warnings.warn(
+            "%s._delObject without suppress_events is discouraged." %
+            self.__class__.__name__, DeprecationWarning)
     ob = aq_base(ob)
     ob._setId(new_id)
 
     # Note - because a rename always keeps the same context, we
     # can just leave the ownership info unchanged.
-    self._setObject(new_id, ob, set_owner=0)
+    try:
+        self._setObject(new_id, ob, set_owner=0, suppress_events=True)
+    except TypeError:
+        self._setObject(new_id, ob, set_owner=0)
+        warnings.warn(
+            "%s._setObject without suppress_events is discouraged." %
+            self.__class__.__name__, DeprecationWarning)
     ob = self._getOb(new_id)
+
+    event.notify(lifecycleevent.ObjectMovedEvent(ob, self, id, self, new_id))
+    contained.notifyContainerModified(self)
+
     ob._postCopy(self, op=1)
 
     return None
