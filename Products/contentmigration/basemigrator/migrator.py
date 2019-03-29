@@ -617,6 +617,7 @@ class UIDMigrator(object):
             return  # no uid handler available
         uid = uidhandler.queryUid(self.old, default=None)
         if uid is not None:
+            uidhandler.unregister(self.old)
             uidhandler.setUid(self.new, uid, check_uniqueness=False)
 
     def last_migrate_at_uuid(self):
