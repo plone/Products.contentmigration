@@ -279,17 +279,16 @@ class CatalogWalker(Walker):
         if limit:
             brains = brains[:limit]
 
-        # unpack to be able to log brains that break during migration
-        brains = [i for i in brains]
+        # Extract and store paths in memory in case some objects are
+        # containment descendants of previously migrated objects (e.g. topics
+        # in topics) and thus the subobject has been reindexed when children
+        # were moved and the old brain would break.
+        paths = [brain.getPath() for brain in brains]
 
-        for brain in brains:
-            try:
-                obj = brain.getObject()
-            except AttributeError:
-                LOG.error("Couldn't access %s" % brain.getPath())
-                continue
-            except KeyError:
-                LOG.error("Couldn't access RID %s" % brain.getRID())
+        for path in paths:
+            obj = self.portal.unrestrictedTraverse(path, None)
+            if obj is None:
+                LOG.error("Couldn't access %s" % path)
                 continue
             try:
                 state = obj._p_changed

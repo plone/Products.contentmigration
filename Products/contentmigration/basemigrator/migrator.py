@@ -29,7 +29,6 @@ from DateTime import DateTime
 from Persistence import PersistentMapping
 from zope.component import queryAdapter
 from zope.component import queryUtility
-from OFS.Uninstalled import BrokenClass
 from OFS.interfaces import IOrderedContainer
 from ZODB.POSException import ConflictError
 from AccessControl.Permission import Permission
@@ -38,6 +37,7 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.CMFCatalogAware import WorkflowAware
 from Products.contentmigration.common import unrestricted_rename
 from Products.contentmigration.common import _createObjectByType
+from Products.contentmigration import utils
 from Products.contentmigration.utils import patch, undoPatch
 from Products.Archetypes.interfaces import IReferenceable
 from plone.locking.interfaces import ILockable
@@ -519,74 +519,38 @@ class FolderMigrationMixin(ItemMigrationMixin):
 
         patch(WorkflowAware, 'notifyWorkflowCreated', notifyWorkflowCreated)
 
-    def beforeChange_storeSubojects(self):
+    def migrate_children(self):
         """
-        Store subobjects from old folder.
-
-        This methods gets all subojects from the old folder and removes them
-        from the old. It also preservers the folder order in a dict. For
-        performance reasons the objects are removed from the old folder before
-        it is renamed. Elsewise the objects would be reindex more often.
+        Copy childish objects from the old folder to the new one.
         """
-
         orderAble = IOrderedContainer.providedBy(self.old)
         orderMap = {}
-        subobjs = {}
-
-        # using objectIds() should be safe with BrokenObjects
-        for id in self.old.objectIds():
-            obj = getattr(self.old.aq_inner.aq_explicit, id)
-            # Broken object support. Maybe we are able to migrate them?
-            if isinstance(obj, BrokenClass):
-                LOG.warning('BrokenObject in %s' % self.old.absolute_url(1))
+        for child_id, child in self.old.objectItems():
+            __traceback_info__ = __traceback_info__ = (
+                'migrate_children', self.old, self.orig_id,
+                'Migrating subobject %s' % child_id)
 
             if orderAble:
                 try:
-                    orderMap[id] = self.old.getObjectPosition(id) or 0
+                    orderMap[child_id] = self.old.getObjectPosition(
+                        child_id) or 0
                 except AttributeError:
                     LOG.debug("Broken OrderSupport", exc_info=True)
                     orderAble = 0
-            subobjs[id] = aq_base(obj)
-            # delOb doesn't call manage_afterAdd which safes some time because
-            # it doesn't unindex an object. The migrate children method uses
-            # _setObject later. This methods indexes the object again and so
-            # updates all catalogs.
-        for id in self.old.objectIds():
-            # Loop again to remove objects, order is not preserved when
-            # deleting objects
-            self.old._delOb(id)
-            # We need to take care to remove the relevant ids from _objects
-            # otherwise objectValues breaks.
-            if getattr(self.old, '_objects', None) is not None:
-                self.old._objects = tuple([o for o in self.old._objects
-                                           if o['id'] != id])
 
-        self.orderMap = orderMap
-        self.subobjs = subobjs
-        self.orderAble = orderAble
-
-    def migrate_children(self):
-        """Copy childish objects from the old folder to the new one
-        """
-        subobjs = self.subobjs
-        for id, obj in subobjs.items():
-            __traceback_info__ = __traceback_info__ = (
-                'migrate_children', self.old, self.orig_id,
-                'Migrating subobject %s' % id)
-            if id in self.new.objectIds():
-                self.new._delOb(id)
+            if child_id in self.new.objectIds():
+                self.new._delOb(child_id)
                 if getattr(self.new, '_objects', None) is not None:
                     self.new._objects = tuple([
                         o for o in self.new._objects if o['id'] != id])
 
-            self.new._setOb(id, obj)
+            utils.unrestricted_move(self.new, child)
 
         # reorder items
         # in CMF 1.5 Topic is orderable while ATCT's Topic is not orderable
         # order objects only when old *and* new are orderable we can't check
         # when creating the map because self.new == None.
-        if self.orderAble and IOrderedContainer.providedBy(self.new):
-            orderMap = self.orderMap
+        if orderAble and IOrderedContainer.providedBy(self.new):
             for id, pos in orderMap.items():
                 self.new.moveObjectToPosition(id, pos)
 
