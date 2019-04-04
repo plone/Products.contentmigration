@@ -3,7 +3,8 @@ import logging
 from Products.ZCatalog.Catalog import mergeResults
 
 from Products.contentmigration.common import HAS_LINGUA_PLONE
-from Products.contentmigration.basemigrator.walker import CatalogWalker, registerWalker
+from Products.contentmigration.basemigrator.walker import (
+    CatalogWalker, registerWalker)
 
 LOG = logging.getLogger('contentmigration')
 
@@ -14,8 +15,10 @@ class CustomQueryWalker(CatalogWalker):
     """
     additionalQuery = {}
 
-    def __init__(self, portal, migrator, src_portal_type=None, dst_portal_type=None,
-                    query={}, callBefore=None, **kwargs):
+    def __init__(
+            self, portal, migrator,
+            src_portal_type=None, dst_portal_type=None,
+            query={}, callBefore=None, **kwargs):
         """Set up the walker. See contentmigration.basemigrator.walker for details.
 
         The 'query' parameter can be used to pass a dict with custom catalog
@@ -38,7 +41,6 @@ class CustomQueryWalker(CatalogWalker):
         self.additionalQuery.update(query)
         self.callBefore = callBefore
         self.kwargs = kwargs
-
 
     def walk(self):
         """Walks around and returns all objects which needs migration
@@ -73,12 +75,12 @@ class CustomQueryWalker(CatalogWalker):
                 continue
 
             if self.callBefore is not None and callable(self.callBefore):
-                if self.callBefore(obj, **self.kwargs) == False:
+                if not self.callBefore(obj, **self.kwargs):
                     continue
 
             try:
                 state = obj._p_changed
-            except:
+            except Exception:
                 state = 0
             if obj is not None:
                 yield obj
@@ -86,7 +88,9 @@ class CustomQueryWalker(CatalogWalker):
                 if state is None:
                     obj._p_deactivate()
 
+
 registerWalker(CustomQueryWalker)
+
 
 class MultiCustomQueryWalker(CustomQueryWalker):
     """A catalog walker that combines the results from multiple
@@ -106,7 +110,6 @@ class MultiCustomQueryWalker(CustomQueryWalker):
         query['meta_type'] = self.src_meta_type
 
         if HAS_LINGUA_PLONE and 'Language' in catalog.indexes():
-            #query['Language'] = catalog.uniqueValuesFor('Language')
             query['Language'] = 'all'
 
         results = []
@@ -120,14 +123,18 @@ class MultiCustomQueryWalker(CustomQueryWalker):
             obj = brain.getObject()
 
             if self.callBefore is not None and callable(self.callBefore):
-                if self.callBefore(obj, **self.kwargs) == False:
+                if not self.callBefore(obj, **self.kwargs):
                     continue
 
-            try: state = obj._p_changed
-            except: state = 0
+            try:
+                state = obj._p_changed
+            except Exception:
+                state = 0
             if obj is not None:
                 yield obj
                 # safe my butt
-                if state is None: obj._p_deactivate()
+                if state is None:
+                    obj._p_deactivate()
+
 
 registerWalker(MultiCustomQueryWalker)
