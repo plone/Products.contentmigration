@@ -56,7 +56,7 @@ class CustomQueryWalker(CatalogWalker):
         if HAS_LINGUA_PLONE and 'Language' in catalog.indexes():
             query['Language'] = 'all'
 
-        brains = catalog(query)
+        brains = catalog.unrestrictedSearchResults(query)
         limit = getattr(self, 'limit', False)
         if limit:
             brains = brains[:limit]
