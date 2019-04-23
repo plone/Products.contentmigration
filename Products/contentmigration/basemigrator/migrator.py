@@ -415,6 +415,9 @@ class BaseCMFMigrator(BaseMigrator):
             wfh = copyPermMap(wfh)
             self.new.workflow_history = wfh
 
+        workflow = getToolByName(self.new, 'portal_workflow')
+        workflow._reindexWorkflowVariables(self.new)
+
     def migrate_allowDiscussion(self):
         """migrate allow discussion bit
         """
