@@ -2,3 +2,17 @@ Fix various errors during migration stemming from optimizations that result in
 catalog inconsistency by removing those optimizations.
 
 Add support for migrating marker interfaces.
+
+Fix workflow variables being out-of-date in the catalog.
+
+Fix expired and restricted content not being migrated.
+
+Fix replacing automatically created content.
+
+Fix CMFEditions being purged when old object is deleted.
+
+Fix indexing errors stemming from renaming the old content.
+
+Fix AT reference migration interfering with ReferenceField migration.
+
+Fix new UID's not being indexed for non-AT content.
