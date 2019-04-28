@@ -1,1 +1,2 @@
-Fixes in support of Archetypes migration.
+Fix various errors during migration stemming from optimizations that result in
+catalog inconsistency by removing those optimizations.

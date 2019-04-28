@@ -542,10 +542,7 @@ class FolderMigrationMixin(ItemMigrationMixin):
                     orderAble = 0
 
             if child_id in self.new.objectIds():
-                self.new._delOb(child_id)
-                if getattr(self.new, '_objects', None) is not None:
-                    self.new._objects = tuple([
-                        o for o in self.new._objects if o['id'] != id])
+                self.new.manage_delObjects([child_id])
 
             utils.unrestricted_move(self.new, child)
 
