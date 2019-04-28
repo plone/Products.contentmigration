@@ -22,6 +22,8 @@ modification, are permitted provided that the following conditions are met:
 from copy import copy
 import logging
 
+from zope import interface
+
 from Acquisition import aq_base
 from Acquisition import aq_parent
 from Acquisition import aq_inner
@@ -241,6 +243,13 @@ class BaseMigrator(object):
         """For custom migration
         """
         pass
+
+    def migrate_provided_interfaces(self):
+        """
+        Migrate directly provided (AKA marker) interfaces.
+        """
+        interface.alsoProvides(
+            self.new, interface.directlyProvidedBy(self.old))
 
     def migrate_properties(self):
         """Migrates zope properties
