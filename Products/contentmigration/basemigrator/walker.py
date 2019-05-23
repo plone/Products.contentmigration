@@ -228,6 +228,9 @@ class Walker(object):
                 transaction.abort()
                 raise MigrationError(objpath, migrator, tb)
 
+            if counter % 20 == 0:
+                LOG.info('Migrated {}: {}'.format(src_portal_type, counter))
+
             if counter % transaction_size == 0:
                 if full_transaction:
                     transaction.commit()
