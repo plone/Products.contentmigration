@@ -8,6 +8,17 @@ Changelog
 
 .. towncrier release notes start
 
+2.2.0 (2018-10-31)
+------------------
+
+Bug fixes:
+
+
+- Switch to new TestCase using AT after PloneTestcase is now DX.
+  [pbauer] (#19)
+- Prevent additionalQuery from spilling to other calls and testlayers.
+  [pbauer] (#21)
+
 
 2.1.19 (2018-02-02)
 -------------------

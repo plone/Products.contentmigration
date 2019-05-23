@@ -1,4 +1,4 @@
-from plone.app.testing import bbb
+from plone.app.testing import bbb_at
 from plone.app import testing
 from plone.testing import z2
 from Products.GenericSetup import EXTENSION, profile_registry
@@ -13,9 +13,9 @@ def setupSampleTypeProfile():
         EXTENSION)
 
 
-class PloneTestCaseFixture(bbb.PloneTestCaseFixture):
+class PloneTestCaseFixture(bbb_at.PloneTestCaseFixture):
 
-    defaultBases = (bbb.PTC_FIXTURE, )
+    defaultBases = (bbb_at.PTC_FIXTURE, )
 
     def setUpZope(self, app, configurationContext):
         setupSampleTypeProfile()
@@ -26,6 +26,7 @@ class PloneTestCaseFixture(bbb.PloneTestCaseFixture):
 
     def setUpPloneSite(self, portal):
         testing.applyProfile(portal, 'Products.contentmigration:CMF_sampletypes')
+
 
 PCM_FIXTURE = PloneTestCaseFixture()
 TestLayer = testing.FunctionalTesting(

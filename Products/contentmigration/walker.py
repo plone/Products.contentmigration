@@ -13,7 +13,6 @@ class CustomQueryWalker(CatalogWalker):
     """Walker using portal_catalog and an optional custom query. The ATCT
     migration framework uses this to find content to migrate.
     """
-    additionalQuery = {}
 
     def __init__(
             self, portal, migrator,
@@ -38,7 +37,7 @@ class CustomQueryWalker(CatalogWalker):
         CatalogWalker.__init__(self, portal, migrator,
                                src_portal_type=src_portal_type,
                                dst_portal_type=dst_portal_type, **kwargs)
-        self.additionalQuery.update(query)
+        self.additionalQuery = query
         self.callBefore = callBefore
         self.kwargs = kwargs
 

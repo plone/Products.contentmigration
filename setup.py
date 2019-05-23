@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '2.1.20.dev0'
+version = '2.2.1.dev0'
 
 setup(
     name='Products.contentmigration',
@@ -10,20 +10,17 @@ setup(
                       open("CHANGES.rst").read()),
     classifiers=[
         "Framework :: Plone",
-        "Framework :: Plone :: 4.3",
-        "Framework :: Plone :: 5.0",
-        "Framework :: Plone :: 5.1",
+        "Framework :: Plone :: 5.2",
         "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.6",
         "Programming Language :: Python :: 2.7",
     ],
     keywords='Plone Archetypes ATContentTypes',
     author='Martin Aspeli (and others)',
     author_email='plone-developers@lists.sourceforge.net',
-    url='https://pypi.python.org/pypi/Products.contentmigration',
+    url='https://pypi.org/project/Products.contentmigration',
     license='LGPL',
-    packages=find_packages(exclude=['ez_setup']),
+    packages=find_packages(),
     namespace_packages=['Products'],
     include_package_data=True,
     zip_safe=False,
