@@ -535,6 +535,12 @@ class FolderMigrationMixin(ItemMigrationMixin):
         """
         Copy childish objects from the old folder to the new one.
         """
+
+        # get default page before children were moved
+        default_page = self.old.getDefaultPage() or \
+            getattr(self.old, 'default_page', None)
+
+        # get all position indexes for children
         orderAble = IOrderedContainer.providedBy(self.old)
         orderMap = {}
         for child_id, child in self.old.objectItems():
@@ -550,6 +556,8 @@ class FolderMigrationMixin(ItemMigrationMixin):
                     LOG.debug("Broken OrderSupport", exc_info=True)
                     orderAble = 0
 
+        # move children to new folder
+        for child_id, child in self.old.objectItems():
             if child_id in self.new.objectIds():
                 self.new.manage_delObjects([child_id])
 
@@ -562,6 +570,10 @@ class FolderMigrationMixin(ItemMigrationMixin):
         if orderAble and IOrderedContainer.providedBy(self.new):
             for id, pos in orderMap.items():
                 self.new.moveObjectToPosition(id, pos)
+
+        if default_page:
+            # set default page after children were moved
+            self.new.setDefaultPage(default_page)
 
     def last_migrate_restoreNotifyWorkflowCreatedMethod(self):
         undoPatch(WorkflowAware, 'notifyWorkflowCreated')
