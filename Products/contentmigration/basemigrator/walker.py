@@ -228,9 +228,6 @@ class Walker(object):
                 transaction.abort()
                 raise MigrationError(objpath, migrator, tb)
 
-            if counter % 20 == 0:
-                LOG.info('Migrated {}: {}'.format(src_portal_type, counter))
-
             if counter % transaction_size == 0:
                 if full_transaction:
                     transaction.commit()
@@ -287,8 +284,13 @@ class CatalogWalker(Walker):
         # in topics) and thus the subobject has been reindexed when children
         # were moved and the old brain would break.
         paths = [brain.getPath() for brain in brains]
-
-        for path in paths:
+        total = len(paths)
+        for index, path in enumerate(paths, start=0):
+            if not index % 20:
+                LOG.info('Migrating {}: {} / {}'.format(
+                    self.src_portal_type,
+                    index,
+                    total))
             obj = self.portal.unrestrictedTraverse(path, None)
             if obj is None:
                 LOG.error("Couldn't access %s" % path)
