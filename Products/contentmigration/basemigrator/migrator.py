@@ -425,9 +425,6 @@ class BaseCMFMigrator(BaseMigrator):
             wfh = copyPermMap(wfh)
             self.new.workflow_history = wfh
 
-        workflow = getToolByName(self.new, 'portal_workflow')
-        workflow._reindexWorkflowVariables(self.new)
-
     def migrate_allowDiscussion(self):
         """migrate allow discussion bit
         """
@@ -647,6 +644,8 @@ class UIDMigrator(object):
         self.old._uncatalogUID(self.parent)
         if UUID_ATTR:  # Prevent object deletion triggering UID related magic
             setattr(self.old, UUID_ATTR, None)
+        if not IReferenceable.providedBy(self.new):
+            return  # new object doesn't support AT uuids
         if queryAdapter(self.new, IMutableUUID):
             IMutableUUID(self.new).set(str(uid))
             uid_catalog = getToolByName(self.parent, 'uid_catalog')

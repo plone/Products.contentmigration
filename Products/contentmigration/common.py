@@ -127,8 +127,6 @@ def unrestricted_rename(self, id, new_id):
             message=sys.exc_info()[1],
             action='manage_main'))
 
-    event.notify(ofs_event.ObjectWillBeMovedEvent(ob, self, id, self, new_id))
-
     try:
         self._delObject(id, suppress_events=True)
     except TypeError:
@@ -149,9 +147,6 @@ def unrestricted_rename(self, id, new_id):
             "%s._setObject without suppress_events is discouraged." %
             self.__class__.__name__, DeprecationWarning)
     ob = self._getOb(new_id)
-
-    event.notify(lifecycleevent.ObjectMovedEvent(ob, self, id, self, new_id))
-    contained.notifyContainerModified(self)
 
     ob._postCopy(self, op=1)
 
