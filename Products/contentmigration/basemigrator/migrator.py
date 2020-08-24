@@ -528,6 +528,8 @@ class FolderMigrationMixin(ItemMigrationMixin):
         """
 
         orderAble = IOrderedContainer.providedBy(self.old)
+        # Sorting the content in very large folders slows down the migration.
+        # You could set orderAble = False to work around that.
         orderMap = {}
         subobjs = {}
 
