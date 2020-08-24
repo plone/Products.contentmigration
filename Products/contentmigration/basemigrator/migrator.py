@@ -531,8 +531,9 @@ class FolderMigrationMixin(ItemMigrationMixin):
         orderMap = {}
         subobjs = {}
 
+        LOG.info(u'Storing {} subobjects...'.format(len(self.old.objectIds())))
         # using objectIds() should be safe with BrokenObjects
-        for id in self.old.objectIds():
+        for index, id in enumerate(self.old.objectIds(), start=1):
             obj = getattr(self.old.aq_inner.aq_explicit, id)
             # Broken object support. Maybe we are able to migrate them?
             if isinstance(obj, BrokenClass):
@@ -546,11 +547,13 @@ class FolderMigrationMixin(ItemMigrationMixin):
                     LOG.debug("Broken OrderSupport", exc_info=True)
                     orderAble = 0
             subobjs[id] = aq_base(obj)
+            if not index % 1000:
+                LOG.info(u'Stored {} subobjects'.format(index))
             # delOb doesn't call manage_afterAdd which safes some time because it
             # doesn't unindex an object. The migrate children method uses
             # _setObject later. This methods indexes the object again and
             # so updates all catalogs.
-        for id in self.old.objectIds():
+        for index, id in enumerate(self.old.objectIds(), start=1):
             # Loop again to remove objects, order is not preserved when
             # deleting objects
             self.old._delOb(id)
@@ -559,6 +562,9 @@ class FolderMigrationMixin(ItemMigrationMixin):
             if getattr(self.old, '_objects', None) is not None:
                 self.old._objects = tuple([o for o in self.old._objects
                                            if o['id'] != id])
+            if not index % 1000:
+                LOG.info(u'Removed {} old subobjects'.format(index))
+
 
         self.orderMap = orderMap
         self.subobjs = subobjs
@@ -568,7 +574,8 @@ class FolderMigrationMixin(ItemMigrationMixin):
         """Copy childish objects from the old folder to the new one
         """
         subobjs = self.subobjs
-        for id, obj in subobjs.items():
+        LOG.info(u'Restoring {} subobjects...'.format(len(subobjs)))
+        for index, (id, obj) in enumerate(subobjs.items(), start=1):
             # we have to use _setObject instead of _setOb because it adds the object
             # to folder._objects but also reindexes all objects.
             __traceback_info__ = __traceback_info__ = ('migrate_children',
@@ -590,15 +597,21 @@ class FolderMigrationMixin(ItemMigrationMixin):
                     self.new._setObject(id, obj, set_owner=0)
                 else:
                     raise
+            if not index % 1000:
+                LOG.info(u'Restored {} subobjects'.format(index))
 
         # reorder items
         # in CMF 1.5 Topic is orderable while ATCT's Topic is not orderable
         # order objects only when old *and* new are orderable we can't check
         # when creating the map because self.new == None.
         if self.orderAble and IOrderedContainer.providedBy(self.new):
+            LOG.info(u'Restoring order')
             orderMap = self.orderMap
-            for id, pos in orderMap.items():
+            for index, (id, pos) in enumerate(orderMap.items(), start=1):
                 self.new.moveObjectToPosition(id, pos)
+                if not index % 1000:
+                    LOG.info(u'Restored order for {} subobjects'.format(index))
+
 
     def last_migrate_restoreNotifyWorkflowCreatedMethod(self):
         undoPatch(WorkflowAware, 'notifyWorkflowCreated')
