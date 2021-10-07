@@ -23,6 +23,7 @@ setup(
         "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 2 :: Only",
     ],
     keywords='Plone Archetypes ATContentTypes',
     author='Martin Aspeli (and others)',
