@@ -7,7 +7,7 @@ if sys.version_info[0] != 2:
     # Prevent creating or installing a distribution with Python 3.
     raise ValueError("Products.contentmigration is based on Archetypes, which is Python 2 only.")
 
-version = '2.2.2'
+version = '2.2.3.dev0'
 
 setup(
     name='Products.contentmigration',
