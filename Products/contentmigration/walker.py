@@ -3,7 +3,8 @@ import logging
 from Products.ZCatalog.Catalog import mergeResults
 
 from Products.contentmigration.common import HAS_LINGUA_PLONE
-from Products.contentmigration.basemigrator.walker import CatalogWalker, registerWalker
+from Products.contentmigration.basemigrator.walker import (
+    CatalogWalker, registerWalker)
 
 LOG = logging.getLogger('contentmigration')
 
@@ -13,8 +14,10 @@ class CustomQueryWalker(CatalogWalker):
     migration framework uses this to find content to migrate.
     """
 
-    def __init__(self, portal, migrator, src_portal_type=None, dst_portal_type=None,
-                    query={}, callBefore=None, **kwargs):
+    def __init__(
+            self, portal, migrator,
+            src_portal_type=None, dst_portal_type=None,
+            query={}, callBefore=None, **kwargs):
         """Set up the walker. See contentmigration.basemigrator.walker for details.
 
         The 'query' parameter can be used to pass a dict with custom catalog
@@ -38,7 +41,6 @@ class CustomQueryWalker(CatalogWalker):
         self.callBefore = callBefore
         self.kwargs = kwargs
 
-
     def walk(self):
         """Walks around and returns all objects which needs migration
 
@@ -53,31 +55,30 @@ class CustomQueryWalker(CatalogWalker):
         if HAS_LINGUA_PLONE and 'Language' in catalog.indexes():
             query['Language'] = 'all'
 
-        brains = catalog(query)
+        brains = catalog.unrestrictedSearchResults(query)
         limit = getattr(self, 'limit', False)
         if limit:
             brains = brains[:limit]
 
-        # unpack to be able to log brains that break during migration
-        brains = [i for i in brains]
+        # Extract and store paths in memory in case some objects are
+        # containment descendants of previously migrated objects (e.g. topics
+        # in topics) and thus the subobject has been reindexed when children
+        # were moved and the old brain would break.
+        paths = [brain.getPath() for brain in brains]
 
-        for brain in brains:
-            try:
-                obj = brain.getObject()
-            except AttributeError:
-                LOG.error("Couldn't access %s" % brain.getPath())
-                continue
-            except KeyError:
-                LOG.error("Couldn't access RID %s" % brain.getRID())
+        for path in paths:
+            obj = self.portal.unrestrictedTraverse(path, None)
+            if obj is None:
+                LOG.error("Couldn't access %s" % path)
                 continue
 
             if self.callBefore is not None and callable(self.callBefore):
-                if self.callBefore(obj, **self.kwargs) == False:
+                if not self.callBefore(obj, **self.kwargs):
                     continue
 
             try:
                 state = obj._p_changed
-            except:
+            except Exception:
                 state = 0
             if obj is not None:
                 yield obj
@@ -85,7 +86,9 @@ class CustomQueryWalker(CatalogWalker):
                 if state is None:
                     obj._p_deactivate()
 
+
 registerWalker(CustomQueryWalker)
+
 
 class MultiCustomQueryWalker(CustomQueryWalker):
     """A catalog walker that combines the results from multiple
@@ -105,7 +108,6 @@ class MultiCustomQueryWalker(CustomQueryWalker):
         query['meta_type'] = self.src_meta_type
 
         if HAS_LINGUA_PLONE and 'Language' in catalog.indexes():
-            #query['Language'] = catalog.uniqueValuesFor('Language')
             query['Language'] = 'all'
 
         results = []
@@ -115,18 +117,31 @@ class MultiCustomQueryWalker(CustomQueryWalker):
         brains = mergeResults(results, has_sort_keys=False,
                               reverse=False)
 
-        for brain in brains:
-            obj = brain.getObject()
+        # Extract and store paths in memory in case some objects are
+        # containment descendants of previously migrated objects (e.g. topics
+        # in topics) and thus the subobject has been reindexed when children
+        # were moved and the old brain would break.
+        paths = [brain.getPath() for brain in brains]
+
+        for path in paths:
+            obj = self.portal.unrestrictedTraverse(path, None)
+            if obj is None:
+                LOG.error("Couldn't access %s" % path)
+                continue
 
             if self.callBefore is not None and callable(self.callBefore):
-                if self.callBefore(obj, **self.kwargs) == False:
+                if not self.callBefore(obj, **self.kwargs):
                     continue
 
-            try: state = obj._p_changed
-            except: state = 0
+            try:
+                state = obj._p_changed
+            except Exception:
+                state = 0
             if obj is not None:
                 yield obj
                 # safe my butt
-                if state is None: obj._p_deactivate()
+                if state is None:
+                    obj._p_deactivate()
+
 
 registerWalker(MultiCustomQueryWalker)

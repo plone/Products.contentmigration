@@ -6,8 +6,8 @@ based CMFPloneTypes (http://plone.org/products/atcontenttypes/).
 Copyright (c) 2004-2005, Christian Heimes <tiran@cheimes.de> and contributors
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
 
  * Redistributions of source code must retain the above copyright notice, this
    list of conditions and the following disclaimer.
@@ -18,11 +18,11 @@ are permitted provided that the following conditions are met:
    to endorse or promote products derived from this software without specific
    prior written permission.
 """
-__author__ = 'Christian Heimes <tiran@cheimes.de>'
-__docformat__ = 'restructuredtext'
 
 from copy import copy
 import logging
+
+from zope import interface
 
 from Acquisition import aq_base
 from Acquisition import aq_parent
@@ -31,10 +31,9 @@ from DateTime import DateTime
 from Persistence import PersistentMapping
 from zope.component import queryAdapter
 from zope.component import queryUtility
-from OFS.Uninstalled import BrokenClass
 from OFS.interfaces import IOrderedContainer
+from OFS.Uninstalled import BrokenClass
 from ZODB.POSException import ConflictError
-from zExceptions import BadRequest
 from AccessControl.Permission import Permission
 from AccessControl import SpecialUsers
 from Products.CMFCore.utils import getToolByName
@@ -45,15 +44,20 @@ from Products.contentmigration.utils import patch, undoPatch
 from Products.Archetypes.interfaces import IReferenceable
 from plone.locking.interfaces import ILockable
 from plone.uuid.interfaces import IMutableUUID
+from zExceptions import BadRequest
 try:
     from plone.app.redirector.interfaces import IRedirectionStorage
     IRedirectionStorage  # pyflakes
 except ImportError:
     IRedirectionStorage = None
+
 try:
     from Products.Archetypes.config import UUID_ATTR
 except ImportError:
     UUID_ATTR = None
+
+__author__ = 'Christian Heimes <tiran@cheimes.de>'
+__docformat__ = 'restructuredtext'
 
 LOG = logging.getLogger('ATCT.migration')
 
@@ -78,9 +82,6 @@ DC_MAPPING = (
     ('Identifier', None, None),
     ('Language', 'setLanguage', 'language'),
     ('Rights', 'setRights', 'rights'),
-
-    # allowDiscussion is not part of the official DC metadata set
-    #('allowDiscussion','isDiscussable','allowDiscussion'),
   )
 
 # Mapping used from DC migration
@@ -163,8 +164,9 @@ class BaseMigrator(object):
         # safe id generation
         while hasattr(aq_base(self.parent), self.old_id):
             self.old_id += 'X'
-        msg = "%s (%s -> %s)" % (self.old.absolute_url(1), self.src_portal_type,
-                                 self.dst_portal_type)
+        msg = "%s (%s -> %s)" % (
+            self.old.absolute_url(1),
+            self.src_portal_type, self.dst_portal_type)
         LOG.debug(msg)
 
     def getMigrationMethods(self):
@@ -243,13 +245,21 @@ class BaseMigrator(object):
         """
         pass
 
+    def migrate_provided_interfaces(self):
+        """
+        Migrate directly provided (AKA marker) interfaces.
+        """
+        interface.alsoProvides(
+            self.new, interface.directlyProvidedBy(self.old))
+
     def migrate_properties(self):
         """Migrates zope properties
 
         Removes the old (if exists) and adds a new
         """
-        if not hasattr(aq_base(self.old), 'propertyIds') or \
-          not hasattr(aq_base(self.new), '_delProperty'):
+        if (
+                not hasattr(aq_base(self.old), 'propertyIds') or
+                not hasattr(aq_base(self.new), '_delProperty')):
             # no properties available
             return None
 
@@ -269,9 +279,10 @@ class BaseMigrator(object):
                 self.new._setProperty(id, value, typ)
             except ConflictError:
                 raise
-            except:
-                LOG.error('Failed to set property %s type %s to %s at object %s' %
-                          (id, typ, value, self.new), exc_info=True)
+            except Exception:
+                LOG.error(
+                    'Failed to set property %s type %s to %s at object %s' % (
+                        id, typ, value, self.new), exc_info=True)
 
     def migrate_owner(self):
         """Migrates the zope owner
@@ -318,10 +329,12 @@ class BaseMigrator(object):
                         self.new._addRole(role)
 
     def migrate_permission_settings(self):
-        """Migrate permission settings (permission <-> role)
-        The acquire flag is coded into the type of the sequence. If roles is a list
-        than the roles are also acquire. If roles is a tuple the roles aren't
-        acquired.
+        """
+        Migrate permission settings (permission <-> role)
+
+        The acquire flag is coded into the type of the sequence. If roles is a
+        list than the roles are also acquire. If roles is a tuple the roles
+        aren't acquired.
         """
         oldmap = getPermissionMapping(self.old.ac_inherited_permissions(1))
         newmap = getPermissionMapping(self.new.ac_inherited_permissions(1))
@@ -349,7 +362,6 @@ class BaseMigrator(object):
             new.newmethod(oldmethod())
         """
         for oldKey, newKey in self.map.items():
-            #LOG("oldKey: " + str(oldKey) + ", newKey: " + str(newKey))
             if not newKey:
                 newKey = oldKey
             oldVal = getattr(self.old, oldKey)
@@ -389,8 +401,6 @@ class BaseMigrator(object):
         if hasattr(ob, '_setPortalTypeName'):
             ob._setPortalTypeName(fti.getId())
 
-        #self.new.reindexObject(['meta_type', 'portal_type'], update_metadata=False)
-
 
 class BaseCMFMigrator(BaseMigrator):
     """Base migrator for CMF objects
@@ -418,8 +428,11 @@ class BaseCMFMigrator(BaseMigrator):
     def migrate_allowDiscussion(self):
         """migrate allow discussion bit
         """
-        if getattr(aq_base(self.old), 'allowDiscussion', _marker) is not _marker and \
-          getattr(aq_base(self.new), 'isDiscussable', _marker)  is not _marker:
+        if (
+                getattr(aq_base(self.old), 'allowDiscussion', _marker)
+                is not _marker and
+                getattr(aq_base(self.new), 'isDiscussable', _marker)
+                is not _marker):
             self.new.isDiscussable(self.old.allowDiscussion())
 
     def migrate_discussion(self):
@@ -476,10 +489,7 @@ class ItemMigrationMixin(object):
     def renameOld(self):
         """Renames the old object
         """
-        #LOG("renameOld | orig_id: " + str(self.orig_id) + "; old_id: " + str(self.old_id))
-        #LOG(str(self.old.absolute_url(1)))
         unrestricted_rename(self.parent, self.orig_id, self.old_id)
-        #self.parent.manage_renameObject(self.orig_id, self.old_id)
 
     def createNew(self):
         """Create the new object
@@ -500,7 +510,7 @@ class ItemMigrationMixin(object):
                 self.parent.moveObject(self.new_id, self._position)
             except ConflictError:
                 raise
-            except:
+            except Exception:
                 LOG.error('Failed to reorder object %s in %s' % (self.new,
                           self.parent), exc_info=True)
 
@@ -521,44 +531,48 @@ class FolderMigrationMixin(ItemMigrationMixin):
 
     def beforeChange_storeSubojects(self):
         """store subobjects from old folder
-        This methods gets all subojects from the old folder and removes them from the
-        old. It also preservers the folder order in a dict.
-        For performance reasons the objects are removed from the old folder before it
-        is renamed. Elsewise the objects would be reindex more often.
+        This methods gets all subojects from the old folder and removes them
+        from the old. It also preservers the folder order in a dict.
+        For performance reasons the objects are removed from the old folder
+        before it is renamed. Elsewise the objects would be reindex more often.
         """
 
+        # get all position indexes for children
         orderAble = IOrderedContainer.providedBy(self.old)
         orderMap = {}
+
         subobjs = {}
 
         # using objectIds() should be safe with BrokenObjects
-        for id in self.old.objectIds():
-            obj = getattr(self.old.aq_inner.aq_explicit, id)
+        for child_id in self.old.objectIds():
+            obj = getattr(self.old.aq_inner.aq_explicit, child_id)
             # Broken object support. Maybe we are able to migrate them?
             if isinstance(obj, BrokenClass):
                 LOG.warning('BrokenObject in %s' % self.old.absolute_url(1))
-                #continue
+                # continue
 
             if orderAble:
                 try:
-                    orderMap[id] = self.old.getObjectPosition(id) or 0
+                    orderMap[child_id] = self.old.getObjectPosition(
+                        child_id) or 0
                 except AttributeError:
                     LOG.debug("Broken OrderSupport", exc_info=True)
                     orderAble = 0
-            subobjs[id] = aq_base(obj)
-            # delOb doesn't call manage_afterAdd which safes some time because it
-            # doesn't unindex an object. The migrate children method uses
+
+            subobjs[child_id] = aq_base(obj)
+            # delOb doesn't call manage_afterAdd which safes some time because
+            # it doesn't unindex an object. The migrate children method uses
             # _setObject later. This methods indexes the object again and
             # so updates all catalogs.
-        for id in self.old.objectIds():
+        for child_id in self.old.objectIds():
             # Loop again to remove objects, order is not preserved when
             # deleting objects
-            self.old._delOb(id)
+            self.old._delOb(child_id)
             # We need to take care to remove the relevant ids from _objects
             # otherwise objectValues breaks.
             if getattr(self.old, '_objects', None) is not None:
                 self.old._objects = tuple([o for o in self.old._objects
-                                           if o['id'] != id])
+                                           if o['id'] != child_id])
 
         self.orderMap = orderMap
         self.subobjs = subobjs
@@ -568,13 +582,14 @@ class FolderMigrationMixin(ItemMigrationMixin):
         """Copy childish objects from the old folder to the new one
         """
         subobjs = self.subobjs
-        for id, obj in subobjs.items():
-            # we have to use _setObject instead of _setOb because it adds the object
-            # to folder._objects but also reindexes all objects.
-            __traceback_info__ = __traceback_info__ = ('migrate_children',
-                          self.old, self.orig_id, 'Migrating subobject %s' % id)
+        for child_id, obj in subobjs.items():
+            # we have to use _setObject instead of _setOb because it adds the
+            # object to folder._objects but also reindexes all objects.
+            __traceback_info__ = __traceback_info__ = (
+                'migrate_children', self.old, self.orig_id,
+                'Migrating subobject %s' % child_id)
             try:
-                self.new._setObject(id, obj, set_owner=0)
+                self.new._setObject(child_id, obj, set_owner=0)
             except BadRequest:
                 # If we already have the object we need to remove it carefully
                 # and retry.  We can assume that such an object must be
@@ -582,12 +597,13 @@ class FolderMigrationMixin(ItemMigrationMixin):
                 # correct than the original.  Such objects may want to
                 # consider setting the attribute '__replaceable__' to avoid
                 # this.
-                if id in self.new.objectIds():
-                    self.new._delOb(id)
+                if child_id in self.new.objectIds():
+                    self.new._delOb(child_id)
                     if getattr(self.new, '_objects', None) is not None:
-                        self.new._objects = tuple([o for o in
-                                        self.new._objects if o['id'] != id])
-                    self.new._setObject(id, obj, set_owner=0)
+                        self.new._objects = tuple(
+                            [o for o in self.new._objects
+                             if o['id'] != child_id])
+                    self.new._setObject(child_id, obj, set_owner=0)
                 else:
                     raise
 
@@ -597,8 +613,8 @@ class FolderMigrationMixin(ItemMigrationMixin):
         # when creating the map because self.new == None.
         if self.orderAble and IOrderedContainer.providedBy(self.new):
             orderMap = self.orderMap
-            for id, pos in orderMap.items():
-                self.new.moveObjectToPosition(id, pos)
+            for obj_id, pos in orderMap.items():
+                self.new.moveObjectToPosition(obj_id, pos)
 
     def last_migrate_restoreNotifyWorkflowCreatedMethod(self):
         undoPatch(WorkflowAware, 'notifyWorkflowCreated')
@@ -616,9 +632,10 @@ class UIDMigrator(object):
             return  # no uid handler available
         uid = uidhandler.queryUid(self.old, default=None)
         if uid is not None:
+            uidhandler.unregister(self.old)
             uidhandler.setUid(self.new, uid, check_uniqueness=False)
 
-    def migrate_at_uuid(self):
+    def last_migrate_at_uuid(self):
         """Migrate AT universal uid
         """
         if not IReferenceable.providedBy(self.old):
@@ -627,8 +644,12 @@ class UIDMigrator(object):
         self.old._uncatalogUID(self.parent)
         if UUID_ATTR:  # Prevent object deletion triggering UID related magic
             setattr(self.old, UUID_ATTR, None)
+        if not IReferenceable.providedBy(self.new):
+            return  # new object doesn't support AT uuids
         if queryAdapter(self.new, IMutableUUID):
             IMutableUUID(self.new).set(str(uid))
+            uid_catalog = getToolByName(self.parent, 'uid_catalog')
+            uid_catalog._catalogObject(self.new, self.new.getPhysicalPath())
         else:
             self.new._setUID(uid)
 
